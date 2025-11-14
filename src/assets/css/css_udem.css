@@ -1,0 +1,18 @@
+/* css pour header */
+.navbar .navbar-brand-wrapper{
+  background: #e9eaec;
+}
+
+.navbar {
+  border-bottom: 4px solid #0057ac;
+}
+.navbar .navbar-brand-wrapper .navbar-brand-inner-wrapper .navbar-brand img {
+  max-width: 100%;
+  height: auto;
+}
+.navbar .navbar-brand-wrapper .navbar-brand-inner-wrapper .navbar-toggler {
+  color: #0057ac;
+}
+.navbar .navbar-menu-wrapper .navbar-nav .nav-item.nav-profile img {
+  width: 100%;
+}

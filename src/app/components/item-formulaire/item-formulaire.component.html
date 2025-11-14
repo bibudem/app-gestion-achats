@@ -1,0 +1,233 @@
+<div class="container-fluid mt-5">
+  <!-- En-tête -->
+  <div class="row mb-4">
+    <div class="col">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1>{{ isEditMode ? 'Modifier l\'item' : 'Ajouter un nouvel item' }}</h1>
+          <p class="text-muted" *ngIf="itemId">ID: {{ itemId }}</p>
+        </div>
+        <div>
+          <button class="btn btn-outline-secondary me-2" (click)="onCancel()">
+            <i class="bi bi-arrow-left"></i> Retour
+          </button>
+          <button class="btn btn-primary" (click)="onSubmit()" [disabled]="submitting">
+            <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+            {{ isEditMode ? 'Modifier' : 'Créer' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+    <p class="mt-2">Chargement des données...</p>
+  </div>
+
+  <!-- Formulaire -->
+  <form [formGroup]="itemForm" *ngIf="!loading">
+    
+    <!-- Section 1: Informations de base -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Informations de base</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Type de formulaire *</label>
+              <select class="form-select" formControlName="type_formulaire"
+                      [class.is-invalid]="hasError('type_formulaire', 'required')">
+                <option value="">Sélectionnez un type</option>
+                <option *ngFor="let type of typeOptions" [value]="type.value">
+                  {{ type.label }}
+                </option>
+              </select>
+              <div class="invalid-feedback" *ngIf="hasError('type_formulaire', 'required')">
+                Le type de formulaire est obligatoire
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Priorité</label>
+              <select class="form-select" formControlName="priorite_demande">
+                <option *ngFor="let priorite of prioriteOptions" [value]="priorite.value">
+                  {{ priorite.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Projets spéciaux</label>
+          <input type="text" class="form-control" formControlName="projets_speciaux">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Informations du document -->
+    <div class="card mb-4">
+      <div class="card-header bg-info text-white">
+        <h5 class="mb-0">Informations du document</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="mb-3">
+              <label class="form-label">Titre du document *</label>
+              <input type="text" class="form-control" formControlName="titre_document"
+                     [class.is-invalid]="hasError('titre_document', 'required')">
+              <div class="invalid-feedback" *ngIf="hasError('titre_document', 'required')">
+                Le titre du document est obligatoire
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label">ISBN/ISSN</label>
+              <input type="text" class="form-control" formControlName="isbn_issn">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Auteur</label>
+              <input type="text" class="form-control" formControlName="auteur">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Éditeur</label>
+              <input type="text" class="form-control" formControlName="editeur_document">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Date de publication</label>
+              <input type="text" class="form-control" formControlName="date_publication" placeholder="YYYY ou YYYY-MM">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Sous-titre</label>
+              <input type="text" class="form-control" formControlName="sous_titre">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Budget et localisation -->
+    <div class="card mb-4">
+      <div class="card-header bg-success text-white">
+        <h5 class="mb-0">Budget et localisation</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label">Bibliothèque</label>
+              <select class="form-select" formControlName="bibliotheque">
+                <option value="">Sélectionnez une bibliothèque</option>
+                <option *ngFor="let bib of bibliothequeOptions" [value]="bib">
+                  {{ bib }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label">Quantité</label>
+              <input type="number" class="form-control" formControlName="quantite" min="1">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label">Prix ($ CAD)</label>
+              <input type="number" class="form-control" formControlName="prix_cad" step="0.01" min="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Fonds budgétaire</label>
+              <input type="text" class="form-control" formControlName="fonds_budgetaire">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Localisation/Emplacement</label>
+              <input type="text" class="form-control" formControlName="localisation_emplacement">
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-info" *ngIf="calculateTotal() > 0">
+          <strong>Total: {{ calculateTotal() | currency:'CAD':'symbol':'1.2-2' }}</strong>
+          ({{ itemForm.get('quantite')?.value }} × {{ itemForm.get('prix_cad')?.value | currency:'CAD':'symbol':'1.2-2' }})
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Statut et notes -->
+    <div class="card mb-4">
+      <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0">Statut et notes</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Statut de la demande</label>
+              <select class="form-select" formControlName="bib_statut_demande">
+                <option *ngFor="let status of statusOptions" [value]="status.value">
+                  {{ status.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Demandeur</label>
+              <input type="text" class="form-control" formControlName="bib_nom_demandeur">
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Notes et commentaires</label>
+          <textarea class="form-control" formControlName="bib_note_commentaire" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+            Annuler
+          </button>
+          <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="submitting">
+            <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+            {{ isEditMode ? 'Modifier l\'item' : 'Créer l\'item' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
