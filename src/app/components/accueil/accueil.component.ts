@@ -37,9 +37,9 @@ export class AccueilComponent implements OnInit {
 //chercher la liste des fournisseurs
   async creerTableauFournisseurs() {
     try {
-
-    } catch(err) {
-      console.error(`Error : ${err.Message}`);
+      console.log('Accueil page');
+    } catch(err: unknown) {
+      console.error(`Error: ${(err as any).message}`);
     }
   }
 

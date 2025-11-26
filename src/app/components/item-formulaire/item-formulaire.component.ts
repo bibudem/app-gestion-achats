@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Item, ItemFormulaireService } from '../../services/items-formulaire.service';
-import { NgbNav } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-item-formulaire',

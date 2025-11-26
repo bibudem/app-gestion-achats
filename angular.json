@@ -6,7 +6,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "projet-accessibilite": {
+    "app-gestion-achats": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/projet-accessibilite",
+            "outputPath": "dist/app-gestion-achats",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -84,18 +84,19 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "projet-accessibilite:build:production"
+              "browserTarget": "app-gestion-achats:build:production"
             },
             "development": {
-              "browserTarget": "projet-accessibilite:build:development"
+              "browserTarget": "app-gestion-achats:build:development"
             }
           },
           "defaultConfiguration": "development"
+
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "projet-accessibilite:build"
+            "browserTarget": "app-gestion-achats:build"
           }
         },
         "test": {
@@ -117,6 +118,5 @@
         }
       }
     }
-  },
-  "defaultProject": "projet-accessibilite"
+  }
 }
