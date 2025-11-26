@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Item, ItemFormulaireService } from '../../services/items-formulaire.service';
+import { NgbNav } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-item-formulaire',
   templateUrl: './item-formulaire.component.html',
   styleUrls: ['./item-formulaire.component.css']
 })
-export class ItemFormulaireComponent implements OnInit {
+export class ItemFormulaireComponent implements OnInit, AfterViewInit {
   itemForm: FormGroup;
   itemId: number | null = null;
   isEditMode = false;
@@ -27,26 +28,122 @@ export class ItemFormulaireComponent implements OnInit {
   ];
 
   statusOptions = [
-    { value: 'En attente', label: 'En attente' },
-    { value: 'En cours', label: 'En cours' },
-    { value: 'Complété', label: 'Complété' },
-    { value: 'Annulé', label: 'Annulé' }
+    { value: 'Saisie en cours en bibliothèque', label: 'Saisie en cours en bibliothèque' },
+    { value: 'En attente en bibliothèque', label: 'En attente en bibliothèque' },
+    { value: 'Soumis aux ACQ', label: 'Soumis aux ACQ' }
   ];
 
   prioriteOptions = [
-    { value: 'Urgente', label: 'Urgente' },
-    { value: 'Élevée', label: 'Élevée' },
-    { value: 'Normale', label: 'Normale' },
-    { value: 'Basse', label: 'Basse' }
+    { value: 'Urgent', label: 'Urgent' },
+    { value: 'Prioritaire', label: 'Prioritaire' },
+    { value: 'Régulier', label: 'Régulier' }
+  ];
+
+  projetsSpeciauxOptions = [
+    'Premiers peuples',
+    'Collection bien-être',
+    'Mini-école de santé',
+    'Soutien à l\'Ukraine',
+    'Transition vers le numérique',
+    'Ne s\'applique pas'
   ];
 
   bibliothequeOptions = [
-    'Bibliothèque centrale',
-    'Bibliothèque des sciences',
-    'Bibliothèque des sciences humaines',
-    'Bibliothèque de droit',
-    'Bibliothèque de médecine',
-    'Bibliothèque de musique'
+    'Aménagement',
+    'Campus Laval',
+    'Direction générale',
+    'Droit',
+    'Du Parc',
+    'Hubert-Reeves',
+    'Kinésiologie',
+    'L.S.H.',
+    'Livres rares',
+    'Mathématiques-Informatique',
+    'Médecine vétérinaire',
+    'Musique',
+    'Marguerite-d\'Youville',
+    'Prêt entre bibliothèques',
+    'Santé',
+    'Service du catalogage',
+    'TGD',
+    'TEST-DRIN'
+  ];
+
+  precisionDemandeOptions = [
+    'Achat de complément de collection (CCOL) pour abonnement (courant ou ancien)',
+    'Achat de numéro de périodique hors abonnement',
+    'Achat d\'archives de périodiques (web)',
+    'Achat en vue d\'un NABO',
+    'Annulation d\'abonnement',
+    'Cesse de paraître',
+    'Changement de support vers l\'électronique',
+    'Changement de titre',
+    'Création de notice pour abonnement courant',
+    'Modification du nombre d\'utilisateurs',
+    'Complément de collection'
+  ];
+
+  categorieDocumentOptions = [
+    'Monographie',
+    'Périodique',
+    'Base de données',
+    'Archives de périodiques',
+    'Archives de monographies'
+  ];
+
+  typeMonographieOptions = [
+    'Livre',
+    'CD-Rom/DVD-Rom',
+    'Enregistrement sonore',
+    'Film',
+    'Matériel didactique',
+    'Partition de musique',
+    'Zine',
+    'Carte et données géospatiales',
+    'Autres (microfilm, etc.)',
+    'Ne s\'applique pas'
+  ];
+
+  usagerCategorieOptions = [
+    'Étudiant-e 3e cycle',
+    'Professeur-e',
+    'Chargé-e de cours',
+    'Professeur-e retraité'
+  ];
+
+  dircolAcqStatutOptions = [
+    'En attente de traitement aux ACQ',
+    'Complété',
+    'Demande annulée',
+    'Budget atteint',
+    'En attente de traitement',
+    'En cours'
+  ];
+
+  dircolAcqSuiviOptions = [
+    'En attente de traitement',
+    'Commande créée',
+    'Ressource électronique activée',
+    'Demande annulée (non traitée)',
+    'Abonnement modifié / annulé',
+    'Budget atteint',
+    'Envoi en bibliothèque sans catalogage',
+    'MONOS : saisie en cours',
+    'Version numérique gratuite : courriel envoyé à l\'éditeur',
+    'Version numérique gratuite : PDF ou URL privé transmis à Accessibilité',
+    'Achat : Commande créée',
+    'Achat : Ressource électronique activée (Sofia)',
+    'Achat : Document papier transmis à Accessibilité (sans catalogage)'
+  ];
+
+  accessibiliteStatutOptions = [
+    'Saisie en cours à Accessibilité',
+    'Soumis aux ACQ : Formulaire complété et prêt à être transmis aux Acquisitions.'
+  ];
+
+  noticeDTDMOptions = [
+    'Non',
+    'Oui'
   ];
 
   constructor(
@@ -67,11 +164,56 @@ export class ItemFormulaireComponent implements OnInit {
     }
   }
 
+  // Initialiser les onglets Bootstrap manuellement
+  ngAfterViewInit() {
+    this.initializeBootstrapTabs();
+  }
+
+   private initializeBootstrapTabs() {
+    // Attendre que le DOM soit complètement rendu
+    setTimeout(() => {
+      const tabElements = document.querySelectorAll('a[data-bs-toggle="tab"]');
+      
+      tabElements.forEach(tabElement => {
+        tabElement.addEventListener('click', (event: Event) => {
+          event.preventDefault();
+          const target = (event.target as HTMLAnchorElement).getAttribute('href');
+          if (target) {
+            this.showTab(target);
+          }
+        });
+      });
+    }, 100);
+  }
+
+  private showTab(tabId: string) {
+    // Cacher tous les onglets
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    tabPanes.forEach(pane => {
+      pane.classList.remove('show', 'active');
+    });
+
+    // Désactiver tous les liens d'onglets
+    const tabLinks = document.querySelectorAll('.nav-link');
+    tabLinks.forEach(link => {
+      link.classList.remove('active');
+    });
+
+    // Activer l'onglet cible
+    const targetPane = document.querySelector(tabId);
+    const targetLink = document.querySelector(`a[href="${tabId}"]`);
+    
+    if (targetPane && targetLink) {
+      targetPane.classList.add('show', 'active');
+      targetLink.classList.add('active');
+    }
+  }
+
   createForm(): FormGroup {
     return this.fb.group({
       // Informations de base
       type_formulaire: ['', Validators.required],
-      priorite_demande: ['Normale'],
+      priorite_demande: ['Régulier'],
       projets_speciaux: [''],
       
       // Informations du document
@@ -83,7 +225,7 @@ export class ItemFormulaireComponent implements OnInit {
       auteur: ['', Validators.maxLength(500)],
       
       // Catalogage
-      creation_notice_dtdm: [false],
+      creation_notice_dtdm: [''],
       note_dtdm: [''],
       numero_oclc_existant: [''],
       catalogage: [''],
@@ -144,12 +286,17 @@ export class ItemFormulaireComponent implements OnInit {
       usager_notes_commentaires: [''],
       
       // Statuts
-      bib_statut_demande: ['En attente'],
+      bib_statut_demande: ['En attente en bibliothèque'],
       dircol_acq_statut_demande: [''],
       dircol_acq_suivi_demande: [''],
       dircol_acq_note: [''],
       dircol_acq_bordereau_imprime: [''],
       accessibilite_statut_demande: [''],
+      
+      // Champs calculés (lecture seule)
+      demande_calculee: [{ value: '', disabled: true }],
+      demande_statut_calculee: [{ value: '', disabled: true }],
+      filtre_calculee: [{ value: '', disabled: true }],
       
       // Précision
       precision_demande: [''],
@@ -224,7 +371,8 @@ export class ItemFormulaireComponent implements OnInit {
     }
 
     this.submitting = true;
-    const formData = this.itemForm.value;
+    // Récupérer toutes les valeurs, y compris les champs désactivés
+    const formData = this.itemForm.getRawValue();
 
     if (this.isEditMode && this.itemId) {
       // Modification

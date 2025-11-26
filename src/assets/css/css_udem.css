@@ -16,3 +16,28 @@
 .navbar .navbar-menu-wrapper .navbar-nav .nav-item.nav-profile img {
   width: 100%;
 }
+select.form-control, .select2-container--default select.select2-selection--single, .select2-container--default .select2-selection--single select.select2-search__field, select.typeahead, select.tt-query, select.tt-hint
+ {
+    outline: 1px solid #9DABB9;
+    color: #37424D;
+}
+
+.form-control{
+  outline: 1px solid #9DABB9;
+  color: #37424D;
+}
+
+.btn {
+   border-radius: 8px;
+}
+
+.btn-pri.btn-primary.disabled, .btn-primary:disabled
+ {
+    color: #fff;
+    background-color: #00407F;
+    border-color: #00407F;
+}
+
+.sidebar {
+    height: 100%;
+  }

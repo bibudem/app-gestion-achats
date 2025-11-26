@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Item, ItemFormulaireService } from '../../services/items-formulaire.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-items-list',
@@ -32,7 +33,7 @@ export class ItemsListComponent implements OnInit {
     'Annulé'
   ];
 
-  constructor(private itemService: ItemFormulaireService) { }
+  constructor(private itemService: ItemFormulaireService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadItems();
@@ -134,8 +135,8 @@ export class ItemsListComponent implements OnInit {
     this.itemService.consulter(id).subscribe({
       next: (item) => {
         // Rediriger vers la page de détail ou ouvrir un modal
-        console.log('Item consulté:', item);
-        // this.router.navigate(['/items', id]);
+        //console.log('Item consulté:', item);
+        this.router.navigate(['/items', id]);
       },
       error: (error) => {
         console.error('Erreur lors de la consultation:', error);

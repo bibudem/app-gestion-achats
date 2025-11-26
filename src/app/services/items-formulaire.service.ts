@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 
 import { ErrorHandlerService } from "./error-handler.service";
@@ -173,8 +173,12 @@ export class ItemFormulaireService {
 
   // Mettre à jour un item existant
   update(item: Item): Observable<any> {
+    if (!item.id_item) {
+      return throwError(() => new Error('ID de l\'item manquant pour la mise à jour'));
+    }
+    
     return this.http
-      .put<Item>(`${this.url}/save`, item, this.httpOptions)
+      .put<Item>(`${this.url}/save/${item.id_item}`, item, this.httpOptions)
       .pipe(catchError(this.errorHandlerService.handleError<any>("update")));
   }
 

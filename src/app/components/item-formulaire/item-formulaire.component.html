@@ -1,231 +1,832 @@
-<div class="container-fluid mt-5">
+<div class="container-fluid">
   <!-- En-tête -->
-  <div class="row mb-4">
-    <div class="col">
+  <div class="row mb-4 mt-5">
+    <div class="col-md-12 mt-3">
       <div class="d-flex justify-content-between align-items-center">
         <div>
-          <h1>{{ isEditMode ? 'Modifier l\'item' : 'Ajouter un nouvel item' }}</h1>
-          <p class="text-muted" *ngIf="itemId">ID: {{ itemId }}</p>
+          <h1 class="h3 mb-1">{{ isEditMode ? 'Modifier l\'item' : 'Ajouter un nouvel item' }}</h1>
+          <p class="text-muted mb-0" *ngIf="itemId">ID: {{ itemId }}</p>
         </div>
         <div>
           <button class="btn btn-outline-secondary me-2" (click)="onCancel()">
             <i class="bi bi-arrow-left"></i> Retour
           </button>
-          <button class="btn btn-primary" (click)="onSubmit()" [disabled]="submitting">
+          <button class="btn btn-primary" (click)="onSubmit()" [disabled]="submitting || itemForm.invalid">
             <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
             {{ isEditMode ? 'Modifier' : 'Créer' }}
           </button>
         </div>
       </div>
+      <hr>
     </div>
   </div>
 
   <!-- Loading -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border" role="status">
-      <span class="visually-hidden">Chargement...</span>
+      <span class="visually-hidden"></span>
     </div>
     <p class="mt-2">Chargement des données...</p>
   </div>
 
-  <!-- Formulaire -->
-  <form [formGroup]="itemForm" *ngIf="!loading">
+  <!-- Formulaire avec onglets -->
+  <form [formGroup]="itemForm" *ngIf="!loading" class="needs-validation" novalidate>
     
-    <!-- Section 1: Informations de base -->
-    <div class="card mb-4">
-      <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Informations de base</h5>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label class="form-label">Type de formulaire *</label>
-              <select class="form-select" formControlName="type_formulaire"
-                      [class.is-invalid]="hasError('type_formulaire', 'required')">
-                <option value="">Sélectionnez un type</option>
-                <option *ngFor="let type of typeOptions" [value]="type.value">
-                  {{ type.label }}
-                </option>
-              </select>
-              <div class="invalid-feedback" *ngIf="hasError('type_formulaire', 'required')">
-                Le type de formulaire est obligatoire
+    <!-- Navigation par onglets ng-bootstrap -->
+    <ul ngbNav #nav="ngbNav" class="nav-tabs" role="tablist">
+      <!-- GROUPE 1: INFORMATIONS FONDAMENTALES -->
+      <li [ngbNavItem]="1" role="presentation">
+        <a ngbNavLink class="h4 p-3">Générales</a>
+        <ng-template ngbNavContent>
+          <div class="card mb-4">
+            <div class="card-header bg-light border-bottom">
+              <h5 class="mb-0 mt-4 pl-1">Informations générales</h5>
+            </div>
+            <div class="card-body p-4">
+             <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Titre du document <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" formControlName="titre_document"
+                         [class.is-invalid]="hasError('titre_document', 'required')" 
+                         placeholder="Titre complet du document">
+                  <div class="invalid-feedback">Le titre du document est obligatoire</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Sous-titre</label>
+                  <input type="text" class="form-control" formControlName="sous_titre" placeholder="Sous-titre du document">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Type de formulaire <span class="text-danger">*</span></label>
+                  <select class="form-control" formControlName="type_formulaire"
+                          [class.is-invalid]="hasError('type_formulaire', 'required')">
+                    <option value="">Sélectionnez un type</option>
+                    <option *ngFor="let type of typeOptions" [value]="type.value">{{ type.label }}</option>
+                  </select>
+                  <div class="invalid-feedback">Le type de formulaire est obligatoire</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Priorité</label>
+                  <select class="form-control" formControlName="priorite_demande">
+                    <option *ngFor="let priorite of prioriteOptions" [value]="priorite.value">{{ priorite.label }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Projets spéciaux</label>
+                  <select class="form-control" formControlName="projets_speciaux">
+                    <option value="">Sélectionnez</option>
+                    <option *ngFor="let projet of projetsSpeciauxOptions" [value]="projet">{{ projet }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Bibliothèque</label>
+                  <select class="form-control" formControlName="bibliotheque">
+                    <option value="">Sélectionnez une bibliothèque</option>
+                    <option *ngFor="let bib of bibliothequeOptions" [value]="bib">{{ bib }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Auteur</label>
+                  <input type="text" class="form-control" formControlName="auteur" placeholder="Nom complet de l'auteur">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Éditeur</label>
+                  <input type="text" class="form-control" formControlName="editeur_document" placeholder="Nom de l'éditeur">
+                </div>
+              </div>
+               <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Collection</label>
+                  <input type="text" class="form-control" formControlName="collection">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Date de publication</label>
+                  <input type="text" class="form-control" formControlName="date_publication" placeholder="YYYY ou YYYY-MM">
+                  <small class="form-text text-muted">Format: 2023 ou 2023-10</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">ISBN/ISSN</label>
+                  <input type="text" class="form-control" formControlName="isbn_issn" placeholder="Ex: 978-3-16-148410-0">
+                  <small class="form-text text-muted">Format: 978-3-16-148410-0 ou 1234-5678</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Catégorie de document</label>
+                  <select class="form-control" formControlName="categorie_document">
+                    <option value="">Sélectionnez</option>
+                    <option *ngFor="let cat of categorieDocumentOptions" [value]="cat">{{ cat }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Type de monographie</label>
+                  <select class="form-control" formControlName="type_monographie">
+                    <option value="">Sélectionnez</option>
+                    <option *ngFor="let type of typeMonographieOptions" [value]="type">{{ type }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Format/Support</label>
+                  <select class="form-control" formControlName="format_support">
+                    <option value="">Sélectionnez</option>
+                    <option value="Imprimé/support physique">Imprimé/support physique</option>
+                    <option value="Électronique">Électronique</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Format prêt numérique</label>
+                  <select class="form-control" formControlName="pret_numerique_format">
+                    <option value="">Sélectionnez</option>
+                    <option value="PDF">PDF</option>
+                    <option value="EPUB">EPUB</option>
+                    <option value="Ne s'applique pas">Ne s'applique pas</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Période couverte</label>
+                  <input type="text" class="form-control" formControlName="periode_couverte">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Nombre de titres inclus</label>
+                  <input type="text" class="form-control" formControlName="nombre_titres_inclus">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Lien vers la plateforme</label>
+                  <input type="text" class="form-control" formControlName="lien_plateforme">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Plateforme à privilégier</label>
+                  <input type="text" class="form-control" formControlName="plateforme_privilegier">
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Nombre d'utilisateurs</label>
+                  <select class="form-control" formControlName="nombre_utilisateurs">
+                    <option value="">Sélectionnez</option>
+                    <option value="Un seul usager">Un seul usager</option>
+                    <option value="Trois usagers simultanés">Trois usagers simultanés</option>
+                    <option value="Accès illimité">Accès illimité</option>
+                    <option value="Autre (note)*">Autre (note)*</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Date début d'abonnement</label>
+                  <input type="text" class="form-control" formControlName="date_debut_abonnement">
+                </div>
+              </div>
+            </div>
+            <div class="row">    
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Référence usager Tipasa</label>
+                  <input type="text" class="form-control" formControlName="reference_usager_tipasa">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Vu format numérique OASIS?</label>
+                  <select class="form-control" formControlName="vu_format_numerique_oasis">
+                    <option value="">Sélectionnez</option>
+                    <option value="Oui">Oui</option>
+                    <option value="Non">Non</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Version moins de 365 USD?</label>
+                  <select class="form-control" formControlName="version_moins_365_usd">
+                    <option value="">Sélectionnez</option>
+                    <option value="Oui">Oui</option>
+                    <option value="Non">Non</option>
+                    <option value="Ne s'applique pas">Ne s'applique pas</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Source d'information</label>
+                  <input type="text" class="form-control" formControlName="source_information">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Localisation/Emplacement</label>
+                  <input type="text" class="form-control" formControlName="localisation_emplacement">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Précision de la demande</label>
+                  <select class="form-control" formControlName="precision_demande">
+                    <option value="">Sélectionnez</option>
+                    <option *ngFor="let precision of precisionDemandeOptions" [value]="precision">{{ precision }}</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label class="form-label">Priorité</label>
-              <select class="form-select" formControlName="priorite_demande">
-                <option *ngFor="let priorite of prioriteOptions" [value]="priorite.value">
-                  {{ priorite.label }}
-                </option>
-              </select>
-            </div>
           </div>
-        </div>
+        </ng-template>
+      </li>
 
-        <div class="mb-3">
-          <label class="form-label">Projets spéciaux</label>
-          <input type="text" class="form-control" formControlName="projets_speciaux">
-        </div>
-      </div>
-    </div>
+      <!-- GROUPE 2: UTILISATION ET ACCÈS -->
+      <li [ngbNavItem]="2">
+        <a ngbNavLink class="h4 p-3">Personnes & Accès</a>
+        <ng-template ngbNavContent>
+          <div class="card mb-4">
+            <div class="card-header bg-light border-bottom">
+              <h5 class="mb-0">Personnes concernées</h5>
+            </div>
+            <div class="card-body">
+              <h6 class="text-primary mb-3">Bibliothèque</h6>
 
-    <!-- Section 2: Informations du document -->
-    <div class="card mb-4">
-      <div class="card-header bg-info text-white">
-        <h5 class="mb-0">Informations du document</h5>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-8">
-            <div class="mb-3">
-              <label class="form-label">Titre du document *</label>
-              <input type="text" class="form-control" formControlName="titre_document"
-                     [class.is-invalid]="hasError('titre_document', 'required')">
-              <div class="invalid-feedback" *ngIf="hasError('titre_document', 'required')">
-                Le titre du document est obligatoire
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="bib_nom_demandeur" class="form-label fw-semibold">Nom du demandeur</label>
+                    <input id="bib_nom_demandeur" type="text" class="form-control" formControlName="bib_nom_demandeur">
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="bib_personne_aviser" class="form-label fw-semibold">Personne à aviser</label>
+                    <input id="bib_personne_aviser" type="text" class="form-control" formControlName="bib_personne_aviser">
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="bib_note_commentaire" class="form-label fw-semibold">Notes bibliothèque</label>
+                    <input id="bib_note_commentaire" type="text" class="form-control" formControlName="bib_note_commentaire">
+                  </div>
+                </div>
+              </div>
+
+              <h6 class="text-primary mb-3 mt-4">Usagers</h6>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="usager_nom" class="form-label fw-semibold">Nom de l'usager</label>
+                    <input id="usager_nom" type="text" class="form-control" formControlName="usager_nom">
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="usager_categorie" class="form-label fw-semibold">Catégorie d'usager</label>
+                    <select id="usager_categorie" class="form-control" formControlName="usager_categorie">
+                      <option value="">Sélectionnez</option>
+                      <option *ngFor="let cat of usagerCategorieOptions" [value]="cat">{{ cat }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="usager_courriel" class="form-label fw-semibold">Courriel de l'usager</label>
+                    <input  type="text" id="usager_courriel" class="form-control" formControlName="usager_courriel">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="usager_faculte_dept" class="form-label fw-semibold">Faculté/Département</label>
+                    <input id="usager_faculte_dept" type="text" class="form-control" formControlName="usager_faculte_dept">
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="usager_bibliotheque" class="form-label fw-semibold">Bibliothèque de l'usager</label>
+                    <input id="usager_bibliotheque" type="text" class="form-control" formControlName="usager_bibliotheque">
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="bibliothecaire_disciplinaire" class="form-label fw-semibold">Bibliothécaire disciplinaire</label>
+                    <input id="bibliothecaire_disciplinaire" class="form-control" formControlName="bibliothecaire_disciplinaire">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-check mb-3">
+                    <input id="usager_aviser_document_recu" class="form-check-input ml-1" type="checkbox" formControlName="usager_aviser_document_recu">
+                    <label class="form-check-label fw-semibold" for="usager_aviser_document_recu ml-1">Aviser l'usager - Document reçu</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                <div class="mb-3">
+                  <div class="form-check">
+                    <input class="form-label form-check-input ml-1" type="checkbox" formControlName="reserve_cours">
+                    <label class="form-label fw-semibold ml-4">Mise en réserve de cours</label>
+                  </div>
+                </div>
+              </div>
               </div>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="mb-3">
-              <label class="form-label">ISBN/ISSN</label>
-              <input type="text" class="form-control" formControlName="isbn_issn">
+        </ng-template>
+      </li>
+      
+      <!-- GROUPE 3: ASPECTS BUDGÉTAIRES ET TECHNIQUES -->
+      <li [ngbNavItem]="3" *ngIf="itemId">
+        <a ngbNavLink class="h4 p-3">Catalogage & Budget</a>
+        <ng-template ngbNavContent>
+          <div class="card mb-4">
+            <div class="card-header bg-light border-bottom mt-3">
+              <h5 class="mb-0 pl-3">Catalogage et Budget</h5>
+            </div>
+            <div class="card-body p-4">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Création notice DTDM</label>
+                  <select class="form-control" formControlName="creation_notice_dtdm">
+                    <option value="">Sélectionnez</option>
+                    <option *ngFor="let notice of noticeDTDMOptions" [value]="notice">{{ notice }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Numéro OCLC existant</label>
+                  <input type="text" class="form-control" formControlName="numero_oclc_existant">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Catalogage</label>
+                  <input type="text" class="form-control" formControlName="catalogage">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">ID de ressource</label>
+                  <input type="text" class="form-control" formControlName="id_ressource">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Catégorie de dépense</label>
+                  <select class="form-control" formControlName="categorie_depense">
+                    <option value="">Sélectionnez</option>
+                    <option value="Achat régulier">Achat régulier</option>
+                    <option value="Achat Covid-19">Achat Covid-19</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Fonds budgétaire</label>
+                  <input type="text" class="form-control" formControlName="fonds_budgetaire" >
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Fonds SN - No de projet</label>
+                  <input type="text" class="form-control" formControlName="fonds_sn_projet">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Quantité</label>
+                  <input type="number" class="form-control" formControlName="quantite" min="1" value="1">
+                  <small class="form-text text-muted">Nombre d'exemplaires</small>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Prix ($ CAD)</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" class="form-control" formControlName="prix_cad" step="0.01" min="0" placeholder="0.00">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Total</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="text" class="form-control bg-light" [value]="calculateTotal() | number:'1.2-2'" readonly>
+                  </div>
+                </div>
+              </div>
+               <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Devise originale</label>
+                  <select class="form-control" formControlName="devise_originale">
+                    <option value="CAD">CAD - Dollar Canadien</option>
+                    <option value="USD">USD - Dollar US</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - Livre Sterling</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Prix en devise originale</label>
+                  <div class="input-group">
+                    <input type="number" class="form-control" formControlName="prix_devise_originale"  min="0">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Note DTDM</label>
+                  <textarea class="form-control" formControlName="note_dtdm" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Note au catalogueur</label>
+                  <textarea class="form-control" formControlName="note_catalogueur" rows="3"></textarea>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+          </div>
+        </ng-template>
+      </li>
+      
+      <li [ngbNavItem]="4" *ngIf="itemId">
+        <a ngbNavLink class="h4 p-3">Accessibilité</a>
+        <ng-template ngbNavContent>
+          <div class="card mb-4">
+            <div class="card-header bg-light border-bottom">
+              <h5 class="mb-0">Accessibilité</h5>
+            </div>
+            <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Nom du demandeur (Accessibilité)</label>
+                  <input type="text" class="form-control" formControlName="accessibilite_nom_demandeur">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Statut de la demande (Accessibilité)</label>
+                  <select class="form-control" formControlName="accessibilite_statut_demande">
+                    <option value="">Sélectionnez</option>
+                    <option *ngFor="let status of accessibiliteStatutOptions" [value]="status">{{ status }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Besoin spécifique / Format</label>
+                  <input type="text" class="form-control" formControlName="besoin_specifique_format">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Fonds budgétaire (si achat)</label>
+                  <input type="text" class="form-control" formControlName="fonds_budgetaire_si_achat">
+                </div>
+              </div>
+               <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Exemplaire électronique détenu</label>
+                  <select class="form-control" formControlName="exemplaire_electronique_detenu">
+                    <option value="">Sélectionnez</option>
+                    <option value="Oui">Oui</option>
+                    <option value="Non">Non</option>
+                    <option value="Ne s'applique pas">Ne s'applique pas</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Exemplaire papier détenu</label>
+                  <select class="form-control" formControlName="exemplaire_papier_detenu">
+                    <option value="">Sélectionnez</option>
+                    <option value="Oui">Oui</option>
+                    <option value="Non">Non</option>
+                    <option value="Ne s'applique pas">Ne s'applique pas</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <div class="form-check mt-4">
+                    <input class="form-check-input ml-1" type="checkbox" formControlName="fournisseur_contacte_sans_succes">
+                    <label class="form-label form-check-label fw-semibold ml-4">Fournisseur contacté sans succès</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">ISBN document</label>
+                  <input type="text" class="form-control" formControlName="isbn_document">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Localisation</label>
+                  <input type="text" class="form-control" formControlName="localisation">
+                </div>
+              </div>
+            </div>
+            <div class="row">              
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">No de notice OCLC</label>
+                  <input type="number" class="form-control" formControlName="no_notice_oclc">
+                </div>
+              </div>
+               <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Permalien Sofia</label>
+                  <input type="text" class="form-control" formControlName="permalien_sofia" >
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Référence usager</label>
+                  <input type="text" class="form-control" formControlName="reference_usager">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Réserver pour usager</label>
+                  <input type="text" class="form-control" formControlName="reserver_pour_usager" >
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Si électronique - Nb utilisateurs</label>
+                  <input type="text" class="form-control" formControlName="si_electronique_nb_utilisateurs">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Si électronique - Lien</label>
+                  <input type="text" class="form-control" formControlName="si_electronique_lien">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Si électronique - Nb usagers</label>
+                  <input type="text" class="form-control" formControlName="si_electronique_nb_usagers">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Source info éditeur</label>
+                  <input type="text" class="form-control" formControlName="source_info_editeur">
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Vérification CAÉB</label>
+                  <select class="form-control" formControlName="verification_caeb">
+                    <option value="">Sélectionnez</option>
+                    <option value="Oui">Oui</option>
+                    <option value="Non">Non</option>
+                    <option value="Ne s'applique pas">Ne s'applique pas</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Vérification EMMA</label>
+                  <select class="form-control" formControlName="verification_emma">
+                    <option value="">Sélectionnez</option>
+                    <option value="Oui">Oui</option>
+                    <option value="Non">Non</option>
+                    <option value="Ne s'applique pas">Ne s'applique pas</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Vérification SQLA</label>
+                  <select class="form-control" formControlName="verification_sqla">
+                    <option value="">Sélectionnez</option>
+                    <option value="Oui">Oui</option>
+                    <option value="Non">Non</option>
+                    <option value="Ne s'applique pas">Ne s'applique pas</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </ng-template>
+      </li>
+      
+      <!-- GROUPE 4: SUIVI ET STATUTS -->
+      <li [ngbNavItem]="5" *ngIf="itemId">
+        <a ngbNavLink class="h4 p-3">Statuts et suivi</a>
+        <ng-template ngbNavContent>
+          <div class="card mb-4">
+            <div class="card-header bg-light border-bottom">
+              <h5 class="mb-0">Statuts et suivi</h5>
+            </div>
+            <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Statut de la demande</label>
+                  <select class="form-control" formControlName="bib_statut_demande">
+                    <option *ngFor="let status of statusOptions" [value]="status.value">{{ status.label }}</option>
+                  </select>
+                </div>
+              </div>
+               <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Statut de la demande ACQ</label>
+                  <select class="form-control" formControlName="dircol_acq_statut_demande">
+                    <option value="">Sélectionnez</option>
+                    <option *ngFor="let status of dircolAcqStatutOptions" [value]="status">{{ status }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Suivi de la demande ACQ</label>
+                  <select class="form-control" formControlName="dircol_acq_suivi_demande">
+                    <option value="">Sélectionnez</option>
+                    <option *ngFor="let suivi of dircolAcqSuiviOptions" [value]="suivi">{{ suivi }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Bordereau imprimé</label>
+                  <select class="form-control" formControlName="dircol_acq_bordereau_imprime">
+                    <option value="">Sélectionnez</option>
+                    <option value="Non">Non</option>
+                    <option value="Oui">Oui</option>
+                    <option value="Partiellement reçu">Partiellement reçu</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Responsable ACQ</label>
+                  <input type="text"  class="form-control" formControlName="dircol_acq_responsable" >
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">ACQ - ISBN</label>
+                  <input type="text" class="form-control" formControlName="acq_isbn">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Date demande éditeur</label>
+                  <input type="date" class="form-control" formControlName="dircol_acq_date_demande_editeur">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Date livraison estimée</label>
+                  <input type="date" class="form-control" formControlName="dircol_acq_date_livraison_estimee">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input ml-1" type="checkbox" formControlName="dircol_acq_numerisation_recommandee">
+                    <label class="form-label form-check-label fw-semibold ml-4">Numérisation recommandée</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input ml-1" type="checkbox" formControlName="techdoc_tri_suggestion_transmise">
+                    <label class="form-label form-check-label fw-semibold ml-4">Suggestion transmise</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Raison d'annulation</label>
+                  <input type="text" class="form-control" formControlName="dircol_acq_raison_annulation">
+                </div>
+              </div>
+              
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Note ACQ</label>
+                  <textarea class="form-control" formControlName="dircol_acq_note" rows="4"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Notes TechDoc</label>
+                  <textarea class="form-control" formControlName="techdoc_tri_notes" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </ng-template>
+      </li>
+    </ul>
 
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label class="form-label">Auteur</label>
-              <input type="text" class="form-control" formControlName="auteur">
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label class="form-label">Éditeur</label>
-              <input type="text" class="form-control" formControlName="editeur_document">
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label class="form-label">Date de publication</label>
-              <input type="text" class="form-control" formControlName="date_publication" placeholder="YYYY ou YYYY-MM">
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label class="form-label">Sous-titre</label>
-              <input type="text" class="form-control" formControlName="sous_titre">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Section 3: Budget et localisation -->
-    <div class="card mb-4">
-      <div class="card-header bg-success text-white">
-        <h5 class="mb-0">Budget et localisation</h5>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-4">
-            <div class="mb-3">
-              <label class="form-label">Bibliothèque</label>
-              <select class="form-select" formControlName="bibliotheque">
-                <option value="">Sélectionnez une bibliothèque</option>
-                <option *ngFor="let bib of bibliothequeOptions" [value]="bib">
-                  {{ bib }}
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="mb-3">
-              <label class="form-label">Quantité</label>
-              <input type="number" class="form-control" formControlName="quantite" min="1">
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="mb-3">
-              <label class="form-label">Prix ($ CAD)</label>
-              <input type="number" class="form-control" formControlName="prix_cad" step="0.01" min="0">
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label class="form-label">Fonds budgétaire</label>
-              <input type="text" class="form-control" formControlName="fonds_budgetaire">
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label class="form-label">Localisation/Emplacement</label>
-              <input type="text" class="form-control" formControlName="localisation_emplacement">
-            </div>
-          </div>
-        </div>
-
-        <div class="alert alert-info" *ngIf="calculateTotal() > 0">
-          <strong>Total: {{ calculateTotal() | currency:'CAD':'symbol':'1.2-2' }}</strong>
-          ({{ itemForm.get('quantite')?.value }} × {{ itemForm.get('prix_cad')?.value | currency:'CAD':'symbol':'1.2-2' }})
-        </div>
-      </div>
-    </div>
-
-    <!-- Section 4: Statut et notes -->
-    <div class="card mb-4">
-      <div class="card-header bg-warning text-dark">
-        <h5 class="mb-0">Statut et notes</h5>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label class="form-label">Statut de la demande</label>
-              <select class="form-select" formControlName="bib_statut_demande">
-                <option *ngFor="let status of statusOptions" [value]="status.value">
-                  {{ status.label }}
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label class="form-label">Demandeur</label>
-              <input type="text" class="form-control" formControlName="bib_nom_demandeur">
-            </div>
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Notes et commentaires</label>
-          <textarea class="form-control" formControlName="bib_note_commentaire" rows="3"></textarea>
-        </div>
-      </div>
-    </div>
+    <!-- Contenu des onglets ng-bootstrap -->
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
     <!-- Boutons d'action -->
-    <div class="row mb-5">
+    <div class="row mb-5 mt-3">
       <div class="col-12">
-        <div class="d-flex justify-content-end gap-2">
-          <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
-            Annuler
-          </button>
-          <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="submitting">
-            <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
-            {{ isEditMode ? 'Modifier l\'item' : 'Créer l\'item' }}
-          </button>
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+              <i class="bi bi-x-circle me-1"></i> Annuler
+            </button>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="submitting || itemForm.invalid">
+              <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+              <i class="bi bi-check-lg me-1" *ngIf="!submitting"></i>
+              {{ isEditMode ? 'Modifier l\'item' : 'Créer l\'item' }}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,60 +1,77 @@
-const pool = require('../config/supabase.config'); 
+const supabase = require('../config/supabase.config');
 
 class Items {
 
   // CREATE
   static async create(data) {
-    const cols = Object.keys(data);
-    const values = Object.values(data);
+    if (!supabase) throw new Error('Supabase client non initialisé');
 
-    const placeholders = cols.map((c, i) => `$${i + 1}`).join(', ');
-    const sql = `
-      INSERT INTO tbl_items (${cols.join(', ')})
-      VALUES (${placeholders})
-      RETURNING *;
-    `;
+    const { data: result, error } = await supabase
+      .from('tbl_items')
+      .insert([data])
+      .select('*');
 
-    return pool.query(sql, values);
+    if (error) throw error;
+    return result;
   }
 
-  // READ (single item)
+  // READ one
   static async findById(id) {
-    const sql = `SELECT * FROM tbl_items WHERE id_item = $1`;
-    return pool.query(sql, [id]);
+    if (!supabase) throw new Error('Supabase client non initialisé');
+
+    const { data: result, error } = await supabase
+      .from('tbl_items')
+      .select('*')
+      .eq('id_item', id)
+      .single();
+
+    if (error) throw error;
+    return result;
   }
 
-  // READ (list + pagination)
+  // READ all + pagination
   static async findAll(limit = 50, offset = 0) {
-    const sql = `
-      SELECT * FROM tbl_items
-      ORDER BY date_creation DESC
-      LIMIT $1 OFFSET $2
-    `;
-    return pool.query(sql, [limit, offset]);
+    if (!supabase) throw new Error('Supabase client non initialisé');
+
+    const { data: result, error } = await supabase
+      .from('tbl_items')
+      .select('*')
+      .order('date_creation', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (error) throw error;
+    return result;
   }
 
   // UPDATE
   static async update(id, data) {
-    const cols = Object.keys(data);
-    const values = Object.values(data);
+    if (!supabase) throw new Error('Supabase client non initialisé');
 
-    const sets = cols.map((c, i) => `${c} = $${i + 1}`).join(', ');
+    const { data: result, error } = await supabase
+      .from('tbl_items')
+      .update(data)
+      .eq('id_item', id)
+      .select('*');
 
-    const sql = `
-      UPDATE tbl_items 
-      SET ${sets}
-      WHERE id_item = $${cols.length + 1}
-      RETURNING *;
-    `;
-
-    return pool.query(sql, [...values, id]);
+    if (error) throw error;
+    return result;
   }
 
   // DELETE
   static async delete(id) {
-    const sql = `DELETE FROM tbl_items WHERE id_item = $1`;
-    return pool.query(sql, [id]);
+    if (!supabase) throw new Error('Supabase client non initialisé');
+
+    const { data: result, error } = await supabase
+      .from('tbl_items')
+      .delete()
+      .eq('id_item', id)
+      .select('*');
+
+    if (error) throw error;
+    return result;
   }
+
+  
 }
 
 module.exports = Items;

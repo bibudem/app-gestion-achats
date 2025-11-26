@@ -16,9 +16,9 @@ import { ItemFormulaireComponent } from './components/item-formulaire/item-formu
 const routes: Routes = [
   { path: '', component: AccueilComponent, canActivate: [AuthGuard] },
   { path: 'accueil', component: AccueilComponent, canActivate: [AuthGuard] },
-  { path: 'rechercher', component: ItemsListComponent, canActivate: [AuthGuard] },
+  { path: 'items', component: ItemsListComponent, canActivate: [AuthGuard] },
   { path: 'items/nouveau', component: ItemFormulaireComponent },
-  { path: 'items/editer/:id', component: ItemFormulaireComponent },
+  { path: 'items/:id', component: ItemFormulaireComponent },
   { path: 'processus', component: ListeProcessusComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'processus/add', component: ListeProcessusComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'processus/details/:id', component: ListeProcessusDelailsComponent, canActivate: [AuthGuard,AdminGuard] },

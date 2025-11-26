@@ -12,6 +12,7 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
 //import pour traduction
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { NgbNavModule, NgbModule } from '@ng-bootstrap/ng-bootstrap'; 
 
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
@@ -58,7 +59,7 @@ import { ItemFormulaireComponent } from './components/item-formulaire/item-formu
     ListFournisseursComponent,
     ListFondsComponent,
     ItemsListComponent,
-    ItemFormulaireComponent // ← AJOUTER CE COMPOSANT
+    ItemFormulaireComponent
   ],
     imports: [
         RouterModule,
@@ -66,22 +67,18 @@ import { ItemFormulaireComponent } from './components/item-formulaire/item-formu
         LoginRoutingModule,
         AppRoutingModule,
         FormsModule,
-        CommonModule,
-        ReactiveFormsModule, // ← S'ASSURER QUE ReactiveFormsModule EST IMPORTÉ
-        // import HttpClientModule after BrowserModule.
+        NgbModule,
+        NgbNavModule,
         HttpClientModule,
         TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            }
+          loader: {
+            provide: TranslateLoader,
+            useFactory: HttpLoaderFactory,
+            deps: [HttpClient]
+          }
         }),
-
         ReactiveFormsModule,
         BrowserAnimationsModule,
-        HttpClientModule,
-        NoopAnimationsModule,
         ListBoxModule,
         DragDropModule
 

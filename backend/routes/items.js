@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const supabase = require('../config/supabase.config');
 
 console.log('🛣️ Initialisation des routes items...');
 
@@ -30,7 +31,7 @@ requiredMethods.forEach(method => {
 
 // Définir les routes
 router.post('/add', itemsController.postItems);
-router.put('/save', itemsController.putItems);
+router.put('/save/:id', itemsController.putItems);
 router.delete('/delete/:id', itemsController.deleteItems);
 router.get('/fiche/:id', itemsController.consulterItems);
 
