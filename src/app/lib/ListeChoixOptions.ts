@@ -1,29 +1,154 @@
-//class qui regroupes les liste de choix pour differents champs
-export class ListeChoixOptions  {
-
-  //les options pour le select
-  listPlateformesObj = [];
-
-  //options type
-  listType = [
-    { id: 1, name: "Online Book" },
-    { id: 2, name: "E Major Reference Work" }
+// liste-choix-options.ts
+export class ListeChoixOptions {
+  // Options pour le type de formulaire
+  typeOptions = [
+    { value: 'nouvel_achat_unique', label: 'Nouvel achat unique' },
+    { value: 'modification_ccol', label: 'Modification CCOL' },
+    { value: 'nouvel_abonnement', label: 'Nouvel abonnement' },
+    { value: 'springer', label: 'Springer' },
+    { value: 'peb_tipasa', label: 'PEB Tipasa' },
+    { value: 'suggestion_usagers', label: 'Suggestion usagers' },
+    { value: 'requete_accessibilite', label: 'Requête accessibilité' }
   ];
 
-  //options Statut
-  listCategorie = [
-    { id: 1, name: "Abonnement" },
-    { id: 2, name: "Achat unique" },
-    { id: 3, name: "Frais de mise à jour" }
+  // Options pour le statut
+  statusOptions = [
+    { value: 'Saisie en cours en bibliothèque', label: 'Saisie en cours en bibliothèque' },
+    { value: 'En attente en bibliothèque', label: 'En attente en bibliothèque' },
+    { value: 'Soumis aux ACQ', label: 'Soumis aux ACQ' }
   ];
-  //options programmes
+
+  // Options pour la priorité
+  prioriteOptions = [
+    { value: 'Urgent', label: 'Urgent' },
+    { value: 'Prioritaire', label: 'Prioritaire' },
+    { value: 'Régulier', label: 'Régulier' }
+  ];
+
+  // Options pour les projets spéciaux
+  projetsSpeciauxOptions = [
+    'Premiers peuples',
+    'Collection bien-être',
+    'Mini-école de santé',
+    'Soutien à l\'Ukraine',
+    'Transition vers le numérique',
+    'Ne s\'applique pas'
+  ];
+
+  // Options pour les bibliothèques
+  bibliothequeOptions = [
+    'Aménagement',
+    'Campus Laval',
+    'Direction générale',
+    'Droit',
+    'Du Parc',
+    'Hubert-Reeves',
+    'Kinésiologie',
+    'L.S.H.',
+    'Livres rares',
+    'Mathématiques-Informatique',
+    'Médecine vétérinaire',
+    'Musique',
+    'Marguerite-d\'Youville',
+    'Prêt entre bibliothèques',
+    'Santé',
+    'Service du catalogage',
+    'TGD',
+    'TEST-DRIN'
+  ];
+
+  // Options pour la précision de demande
+  precisionDemandeOptions = [
+    'Achat de complément de collection (CCOL) pour abonnement (courant ou ancien)',
+    'Achat de numéro de périodique hors abonnement',
+    'Achat d\'archives de périodiques (web)',
+    'Achat en vue d\'un NABO',
+    'Annulation d\'abonnement',
+    'Cesse de paraître',
+    'Changement de support vers l\'électronique',
+    'Changement de titre',
+    'Création de notice pour abonnement courant',
+    'Modification du nombre d\'utilisateurs',
+    'Complément de collection'
+  ];
+
+  // Options pour la catégorie de document
+  categorieDocumentOptions = [
+    'Monographie',
+    'Périodique',
+    'Base de données',
+    'Archives de périodiques',
+    'Archives de monographies'
+  ];
+
+  // Options pour le type de monographie
+  typeMonographieOptions = [
+    'Livre',
+    'CD-Rom/DVD-Rom',
+    'Enregistrement sonore',
+    'Film',
+    'Matériel didactique',
+    'Partition de musique',
+    'Zine',
+    'Carte et données géospatiales',
+    'Autres (microfilm, etc.)',
+    'Ne s\'applique pas'
+  ];
+
+  // Options pour la catégorie d'usager
+  usagerCategorieOptions = [
+    'Étudiant-e 3e cycle',
+    'Professeur-e',
+    'Chargé-e de cours',
+    'Professeur-e retraité'
+  ];
+
+  // Options pour le statut DIRCOL ACQ
+  dircolAcqStatutOptions = [
+    'En attente de traitement aux ACQ',
+    'Complété',
+    'Demande annulée',
+    'Budget atteint',
+    'En attente de traitement',
+    'En cours'
+  ];
+
+  // Options pour le suivi DIRCOL ACQ
+  dircolAcqSuiviOptions = [
+    'En attente de traitement',
+    'Commande créée',
+    'Ressource électronique activée',
+    'Demande annulée (non traitée)',
+    'Abonnement modifié / annulé',
+    'Budget atteint',
+    'Envoi en bibliothèque sans catalogage',
+    'MONOS : saisie en cours',
+    'Version numérique gratuite : courriel envoyé à l\'éditeur',
+    'Version numérique gratuite : PDF ou URL privé transmis à Accessibilité',
+    'Achat : Commande créée',
+    'Achat : Ressource électronique activée (Sofia)',
+    'Achat : Document papier transmis à Accessibilité (sans catalogage)'
+  ];
+
+  // Options pour le statut accessibilité
+  accessibiliteStatutOptions = [
+    'Saisie en cours à Accessibilité',
+    'Soumis aux ACQ : Formulaire complété et prêt à être transmis aux Acquisitions.'
+  ];
+
+  // Options pour la notice DTDM
+  noticeDTDMOptions = [
+    'Non',
+    'Oui'
+  ];
+
   listProgramme = [
     { id: 1, name: "EBA - Achat sectoriel (Add On)" },
     { id: 2, name: "BCI" },
     { id: 3, name: "EBA" },
     { id: 4, name: "Donnée non disponible" }
   ];
-  //options bibliotheques
+
   listBibliotheques = [
     { id: 1, name: "Aménagement" },
     { id: 2, name: "BLSH" },
@@ -34,34 +159,26 @@ export class ListeChoixOptions  {
     { id: 7, name: "Sciences" },
     { id: 7, name: "Non applicable" }
   ];
-  //options SECTEUR
+
   listSecteurs = [
     { id: 1, name: "LSH" },
     { id: 2, name: "Sciences & Santé" },
     { id: 3, name: "TGDAMLD" },
     { id: 4, name: "Donnée non disponible" }
   ];
-  //objet pour les sujets
-  sujetsListe = [
-    {id: 1, name: 'sujet 1'},
-    {id: 2, name: 'sujet 2'},
-    {id: 3, name: 'sujet 3'},
-    {id: 8, name: 'sujet 4'},
-  ];
-  //objet pour les sujets
+
+
   listeAcces = [
     {id: 1, name: 'Oui'},
     {id: 2, name: 'Non'},
     {id: 3, name: 'Hybride'},
   ];
 
-  //objet pour les sujets
   essentiel = [
     {id: 1, name: 'Oui'},
     {id: 2, name: 'Non'}
   ];
 
-  //objet pour les sujets
   listeFonds = [
     {id: 1, name: 'MO 002'},
     {id: 2, name: 'MO 012'},
@@ -75,8 +192,6 @@ export class ListeChoixOptions  {
     {id: 10, name: 'Non disponible'}
   ];
 
-
-  //objet pour les sujets
   listeLangue = [
     {id: 1, name: 'Français'},
     {id: 2, name: 'Anglais'},
@@ -84,7 +199,6 @@ export class ListeChoixOptions  {
     {id: 4, name: 'Autres'}
   ];
 
-  //objet pour les sujets
   listeNbrUsager = [
     {id: 1, name: '1'},
     {id: 2, name: '2'},
@@ -93,7 +207,7 @@ export class ListeChoixOptions  {
     {id: 5, name: '5'},
     {id: 6, name: 'illimités'}
   ];
-  //options Format
+
   listFormat = [
     { id: 1, name: "Électronique" },
     { id: 2, name: "Papier" },

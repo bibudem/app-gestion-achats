@@ -11,7 +11,7 @@
           <button class="btn btn-outline-secondary me-2" (click)="onCancel()">
             <i class="bi bi-arrow-left"></i> Retour
           </button>
-          <button class="btn btn-primary" (click)="onSubmit()" [disabled]="submitting || itemForm.invalid">
+          <button class="btn btn-success" (click)="onSubmit()" [disabled]="submitting || itemForm.invalid">
             <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
             {{ isEditMode ? 'Modifier' : 'Créer' }}
           </button>
@@ -22,11 +22,11 @@
   </div>
 
   <!-- Loading -->
-  <div *ngIf="loading" class="text-center py-5">
+  <div *ngIf="loading" class="text-center">
     <div class="spinner-border" role="status">
       <span class="visually-hidden"></span>
     </div>
-    <p class="mt-2">Chargement des données...</p>
+    <p class="mt-2">Chargement...</p>
   </div>
 
   <!-- Formulaire avec onglets -->
@@ -67,7 +67,7 @@
                   <select class="form-control" formControlName="type_formulaire"
                           [class.is-invalid]="hasError('type_formulaire', 'required')">
                     <option value="">Sélectionnez un type</option>
-                    <option *ngFor="let type of typeOptions" [value]="type.value">{{ type.label }}</option>
+                    <option *ngFor="let type of options.typeOptions" [value]="type.value">{{ type.label }}</option>
                   </select>
                   <div class="invalid-feedback">Le type de formulaire est obligatoire</div>
                 </div>
@@ -76,7 +76,7 @@
                 <div class="mb-3">
                   <label class="form-label fw-semibold">Priorité</label>
                   <select class="form-control" formControlName="priorite_demande">
-                    <option *ngFor="let priorite of prioriteOptions" [value]="priorite.value">{{ priorite.label }}</option>
+                    <option *ngFor="let priorite of options.prioriteOptions" [value]="priorite.value">{{ priorite.label }}</option>
                   </select>
                 </div>
               </div>
@@ -85,7 +85,7 @@
                   <label class="form-label fw-semibold">Projets spéciaux</label>
                   <select class="form-control" formControlName="projets_speciaux">
                     <option value="">Sélectionnez</option>
-                    <option *ngFor="let projet of projetsSpeciauxOptions" [value]="projet">{{ projet }}</option>
+                    <option *ngFor="let projet of options.projetsSpeciauxOptions" [value]="projet">{{ projet }}</option>
                   </select>
                 </div>
               </div>
@@ -94,7 +94,7 @@
                   <label class="form-label fw-semibold">Bibliothèque</label>
                   <select class="form-control" formControlName="bibliotheque">
                     <option value="">Sélectionnez une bibliothèque</option>
-                    <option *ngFor="let bib of bibliothequeOptions" [value]="bib">{{ bib }}</option>
+                    <option *ngFor="let bib of options.bibliothequeOptions" [value]="bib">{{ bib }}</option>
                   </select>
                 </div>
               </div>
@@ -139,7 +139,7 @@
                   <label class="form-label fw-semibold">Catégorie de document</label>
                   <select class="form-control" formControlName="categorie_document">
                     <option value="">Sélectionnez</option>
-                    <option *ngFor="let cat of categorieDocumentOptions" [value]="cat">{{ cat }}</option>
+                    <option *ngFor="let cat of options.categorieDocumentOptions" [value]="cat">{{ cat }}</option>
                   </select>
                 </div>
               </div>
@@ -148,7 +148,7 @@
                   <label class="form-label fw-semibold">Type de monographie</label>
                   <select class="form-control" formControlName="type_monographie">
                     <option value="">Sélectionnez</option>
-                    <option *ngFor="let type of typeMonographieOptions" [value]="type">{{ type }}</option>
+                    <option *ngFor="let type of options.typeMonographieOptions" [value]="type">{{ type }}</option>
                   </select>
                 </div>
               </div>
@@ -267,7 +267,7 @@
                   <label class="form-label fw-semibold">Précision de la demande</label>
                   <select class="form-control" formControlName="precision_demande">
                     <option value="">Sélectionnez</option>
-                    <option *ngFor="let precision of precisionDemandeOptions" [value]="precision">{{ precision }}</option>
+                    <option *ngFor="let precision of options.precisionDemandeOptions" [value]="precision">{{ precision }}</option>
                   </select>
                 </div>
               </div>
@@ -325,7 +325,7 @@
                     <label for="usager_categorie" class="form-label fw-semibold">Catégorie d'usager</label>
                     <select id="usager_categorie" class="form-control" formControlName="usager_categorie">
                       <option value="">Sélectionnez</option>
-                      <option *ngFor="let cat of usagerCategorieOptions" [value]="cat">{{ cat }}</option>
+                      <option *ngFor="let cat of options.usagerCategorieOptions" [value]="cat">{{ cat }}</option>
                     </select>
                   </div>
                 </div>
@@ -362,14 +362,14 @@
                 <div class="col-md-3">
                   <div class="form-check mb-3">
                     <input id="usager_aviser_document_recu" class="form-check-input ml-1" type="checkbox" formControlName="usager_aviser_document_recu">
-                    <label class="form-check-label fw-semibold" for="usager_aviser_document_recu ml-1">Aviser l'usager - Document reçu</label>
+                    <label class="form-check-label fw-semibold" for="usager_aviser_document_recu">Aviser l'usager - Document reçu</label>
                   </div>
                 </div>
                 <div class="col-md-4">
                 <div class="mb-3">
                   <div class="form-check">
                     <input class="form-label form-check-input ml-1" type="checkbox" formControlName="reserve_cours">
-                    <label class="form-label fw-semibold ml-4">Mise en réserve de cours</label>
+                    <label class="form-check-label fw-semibold ml-4">Mise en réserve de cours</label>
                   </div>
                 </div>
               </div>
@@ -394,7 +394,7 @@
                   <label class="form-label fw-semibold">Création notice DTDM</label>
                   <select class="form-control" formControlName="creation_notice_dtdm">
                     <option value="">Sélectionnez</option>
-                    <option *ngFor="let notice of noticeDTDMOptions" [value]="notice">{{ notice }}</option>
+                    <option *ngFor="let notice of options.noticeDTDMOptions" [value]="notice">{{ notice }}</option>
                   </select>
                 </div>
               </div>
@@ -487,6 +487,7 @@
                 </div>
               </div>
             </div>
+            <hr>
             <div class="row">
               <div class="col-md-12">
                 <div class="mb-3">
@@ -528,7 +529,7 @@
                   <label class="form-label fw-semibold">Statut de la demande (Accessibilité)</label>
                   <select class="form-control" formControlName="accessibilite_statut_demande">
                     <option value="">Sélectionnez</option>
-                    <option *ngFor="let status of accessibiliteStatutOptions" [value]="status">{{ status }}</option>
+                    <option *ngFor="let status of options.accessibiliteStatutOptions" [value]="status">{{ status }}</option>
                   </select>
                 </div>
               </div>
@@ -697,7 +698,7 @@
                 <div class="mb-3">
                   <label class="form-label fw-semibold">Statut de la demande</label>
                   <select class="form-control" formControlName="bib_statut_demande">
-                    <option *ngFor="let status of statusOptions" [value]="status.value">{{ status.label }}</option>
+                    <option *ngFor="let status of options.statusOptions" [value]="status.value">{{ status.label }}</option>
                   </select>
                 </div>
               </div>
@@ -706,7 +707,7 @@
                   <label class="form-label fw-semibold">Statut de la demande ACQ</label>
                   <select class="form-control" formControlName="dircol_acq_statut_demande">
                     <option value="">Sélectionnez</option>
-                    <option *ngFor="let status of dircolAcqStatutOptions" [value]="status">{{ status }}</option>
+                    <option *ngFor="let status of options.dircolAcqStatutOptions" [value]="status">{{ status }}</option>
                   </select>
                 </div>
               </div>
@@ -715,7 +716,7 @@
                   <label class="form-label fw-semibold">Suivi de la demande ACQ</label>
                   <select class="form-control" formControlName="dircol_acq_suivi_demande">
                     <option value="">Sélectionnez</option>
-                    <option *ngFor="let suivi of dircolAcqSuiviOptions" [value]="suivi">{{ suivi }}</option>
+                    <option *ngFor="let suivi of options.dircolAcqSuiviOptions" [value]="suivi">{{ suivi }}</option>
                   </select>
                 </div>
               </div>
@@ -758,10 +759,10 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-3">
                 <div class="mb-3">
                   <div class="form-check">
-                    <input class="form-check-input ml-1" type="checkbox" formControlName="dircol_acq_numerisation_recommandee">
+                    <input class="form-check-input ml-1 mt-2 mb-2" type="checkbox" formControlName="dircol_acq_numerisation_recommandee">
                     <label class="form-label form-check-label fw-semibold ml-4">Numérisation recommandée</label>
                   </div>
                 </div>
@@ -769,12 +770,13 @@
               <div class="col-md-6">
                 <div class="mb-3">
                   <div class="form-check">
-                    <input class="form-check-input ml-1" type="checkbox" formControlName="techdoc_tri_suggestion_transmise">
+                    <input class="form-check-input ml-1 mt-2 mb-2" type="checkbox" formControlName="techdoc_tri_suggestion_transmise">
                     <label class="form-label form-check-label fw-semibold ml-4">Suggestion transmise</label>
                   </div>
                 </div>
               </div>
             </div>
+            <hr>
             <div class="row">
               <div class="col-md-12">
                 <div class="mb-3">
@@ -821,7 +823,7 @@
             </button>
           </div>
           <div class="d-flex gap-2">
-            <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="submitting || itemForm.invalid">
+            <button type="button" class="btn btn-success" (click)="onSubmit()" [disabled]="submitting || itemForm.invalid">
               <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
               <i class="bi bi-check-lg me-1" *ngIf="!submitting"></i>
               {{ isEditMode ? 'Modifier l\'item' : 'Créer l\'item' }}

@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Item, ItemFormulaireService } from '../../services/items-formulaire.service';
+import { ListeChoixOptions } from '../../lib/ListeChoixOptions';
 
 @Component({
   selector: 'app-item-formulaire',
@@ -15,135 +16,8 @@ export class ItemFormulaireComponent implements OnInit, AfterViewInit {
   loading = false;
   submitting = false;
 
-  // Options pour les selects
-  typeOptions = [
-    { value: 'nouvel_achat_unique', label: 'Nouvel achat unique' },
-    { value: 'modification_ccol', label: 'Modification CCOL' },
-    { value: 'nouvel_abonnement', label: 'Nouvel abonnement' },
-    { value: 'springer', label: 'Springer' },
-    { value: 'peb_tipasa', label: 'PEB Tipasa' },
-    { value: 'suggestion_usagers', label: 'Suggestion usagers' },
-    { value: 'requete_accessibilite', label: 'Requête accessibilité' }
-  ];
-
-  statusOptions = [
-    { value: 'Saisie en cours en bibliothèque', label: 'Saisie en cours en bibliothèque' },
-    { value: 'En attente en bibliothèque', label: 'En attente en bibliothèque' },
-    { value: 'Soumis aux ACQ', label: 'Soumis aux ACQ' }
-  ];
-
-  prioriteOptions = [
-    { value: 'Urgent', label: 'Urgent' },
-    { value: 'Prioritaire', label: 'Prioritaire' },
-    { value: 'Régulier', label: 'Régulier' }
-  ];
-
-  projetsSpeciauxOptions = [
-    'Premiers peuples',
-    'Collection bien-être',
-    'Mini-école de santé',
-    'Soutien à l\'Ukraine',
-    'Transition vers le numérique',
-    'Ne s\'applique pas'
-  ];
-
-  bibliothequeOptions = [
-    'Aménagement',
-    'Campus Laval',
-    'Direction générale',
-    'Droit',
-    'Du Parc',
-    'Hubert-Reeves',
-    'Kinésiologie',
-    'L.S.H.',
-    'Livres rares',
-    'Mathématiques-Informatique',
-    'Médecine vétérinaire',
-    'Musique',
-    'Marguerite-d\'Youville',
-    'Prêt entre bibliothèques',
-    'Santé',
-    'Service du catalogage',
-    'TGD',
-    'TEST-DRIN'
-  ];
-
-  precisionDemandeOptions = [
-    'Achat de complément de collection (CCOL) pour abonnement (courant ou ancien)',
-    'Achat de numéro de périodique hors abonnement',
-    'Achat d\'archives de périodiques (web)',
-    'Achat en vue d\'un NABO',
-    'Annulation d\'abonnement',
-    'Cesse de paraître',
-    'Changement de support vers l\'électronique',
-    'Changement de titre',
-    'Création de notice pour abonnement courant',
-    'Modification du nombre d\'utilisateurs',
-    'Complément de collection'
-  ];
-
-  categorieDocumentOptions = [
-    'Monographie',
-    'Périodique',
-    'Base de données',
-    'Archives de périodiques',
-    'Archives de monographies'
-  ];
-
-  typeMonographieOptions = [
-    'Livre',
-    'CD-Rom/DVD-Rom',
-    'Enregistrement sonore',
-    'Film',
-    'Matériel didactique',
-    'Partition de musique',
-    'Zine',
-    'Carte et données géospatiales',
-    'Autres (microfilm, etc.)',
-    'Ne s\'applique pas'
-  ];
-
-  usagerCategorieOptions = [
-    'Étudiant-e 3e cycle',
-    'Professeur-e',
-    'Chargé-e de cours',
-    'Professeur-e retraité'
-  ];
-
-  dircolAcqStatutOptions = [
-    'En attente de traitement aux ACQ',
-    'Complété',
-    'Demande annulée',
-    'Budget atteint',
-    'En attente de traitement',
-    'En cours'
-  ];
-
-  dircolAcqSuiviOptions = [
-    'En attente de traitement',
-    'Commande créée',
-    'Ressource électronique activée',
-    'Demande annulée (non traitée)',
-    'Abonnement modifié / annulé',
-    'Budget atteint',
-    'Envoi en bibliothèque sans catalogage',
-    'MONOS : saisie en cours',
-    'Version numérique gratuite : courriel envoyé à l\'éditeur',
-    'Version numérique gratuite : PDF ou URL privé transmis à Accessibilité',
-    'Achat : Commande créée',
-    'Achat : Ressource électronique activée (Sofia)',
-    'Achat : Document papier transmis à Accessibilité (sans catalogage)'
-  ];
-
-  accessibiliteStatutOptions = [
-    'Saisie en cours à Accessibilité',
-    'Soumis aux ACQ : Formulaire complété et prêt à être transmis aux Acquisitions.'
-  ];
-
-  noticeDTDMOptions = [
-    'Non',
-    'Oui'
-  ];
+  // Instance de la classe contenant les options
+  options = new ListeChoixOptions();
 
   constructor(
     private fb: FormBuilder,
@@ -163,13 +37,12 @@ export class ItemFormulaireComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Initialiser les onglets Bootstrap manuellement
+  // Les autres méthodes restent inchangées...
   ngAfterViewInit() {
     this.initializeBootstrapTabs();
   }
 
-   private initializeBootstrapTabs() {
-    // Attendre que le DOM soit complètement rendu
+  private initializeBootstrapTabs() {
     setTimeout(() => {
       const tabElements = document.querySelectorAll('a[data-bs-toggle="tab"]');
       
@@ -186,19 +59,16 @@ export class ItemFormulaireComponent implements OnInit, AfterViewInit {
   }
 
   private showTab(tabId: string) {
-    // Cacher tous les onglets
     const tabPanes = document.querySelectorAll('.tab-pane');
     tabPanes.forEach(pane => {
       pane.classList.remove('show', 'active');
     });
 
-    // Désactiver tous les liens d'onglets
     const tabLinks = document.querySelectorAll('.nav-link');
     tabLinks.forEach(link => {
       link.classList.remove('active');
     });
 
-    // Activer l'onglet cible
     const targetPane = document.querySelector(tabId);
     const targetLink = document.querySelector(`a[href="${tabId}"]`);
     
@@ -370,11 +240,9 @@ export class ItemFormulaireComponent implements OnInit, AfterViewInit {
     }
 
     this.submitting = true;
-    // Récupérer toutes les valeurs, y compris les champs désactivés
     const formData = this.itemForm.getRawValue();
 
     if (this.isEditMode && this.itemId) {
-      // Modification
       const updateData = { ...formData, id_item: this.itemId };
       this.itemService.update(updateData).subscribe({
         next: () => {
@@ -388,7 +256,6 @@ export class ItemFormulaireComponent implements OnInit, AfterViewInit {
         }
       });
     } else {
-      // Création
       this.itemService.post(formData).subscribe({
         next: () => {
           this.submitting = false;
@@ -416,13 +283,11 @@ export class ItemFormulaireComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Helper pour afficher les erreurs de validation
   hasError(controlName: string, errorType: string): boolean {
     const control = this.itemForm.get(controlName);
     return control ? control.hasError(errorType) && (control.touched || control.dirty) : false;
   }
 
-  // Calculer le total
   calculateTotal(): number {
     const quantite = this.itemForm.get('quantite')?.value || 0;
     const prix = this.itemForm.get('prix_cad')?.value || 0;

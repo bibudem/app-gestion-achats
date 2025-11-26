@@ -169,7 +169,7 @@ export class ItemsListComponent implements OnInit {
       case 'Annulé':
         return 'badge status-cancelled';
       default:
-        return 'badge bg-secondary';
+        return 'badge bg-warning';
     }
   }
 
