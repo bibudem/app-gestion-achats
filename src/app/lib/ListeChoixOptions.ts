@@ -11,12 +11,13 @@ export class ListeChoixOptions {
     { value: 'requete_accessibilite', label: 'Requête accessibilité' }
   ];
 
-  // Options pour le statut
-  statusOptions = [
-    { value: 'Saisie en cours en bibliothèque', label: 'Saisie en cours en bibliothèque' },
-    { value: 'En attente en bibliothèque', label: 'En attente en bibliothèque' },
-    { value: 'Soumis aux ACQ', label: 'Soumis aux ACQ' }
-  ];
+  // Options pour le statut (bibliothèque)
+statusOptions = [
+  'Saisie en cours en bibliothèque',
+  'En attente en bibliothèque',
+  'Soumis aux ACQ'
+];
+
 
   // Options pour la priorité
   prioriteOptions = [
@@ -105,7 +106,7 @@ export class ListeChoixOptions {
 
   // Options pour le statut DIRCOL ACQ
   dircolAcqStatutOptions = [
-    'En attente de traitement aux ACQ',
+    'En attente',
     'Complété',
     'Demande annulée',
     'Budget atteint',

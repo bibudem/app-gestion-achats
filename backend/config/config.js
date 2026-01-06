@@ -11,7 +11,7 @@ module.exports = {
   proxyPort: 80,
 
   //ports
-  clientPort: 4204,
+  clientPort: 4200,
   serverPort: 9111,
   fusionAuthPort: 9111,
 

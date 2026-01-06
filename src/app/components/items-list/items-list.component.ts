@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Item, ItemFormulaireService } from '../../services/items-formulaire.service';
 import { Router } from '@angular/router';
+import { Item, ItemFormulaireService } from '../../services/items-formulaire.service';
+import { ListeChoixOptions } from '../../lib/ListeChoixOptions';
 
 @Component({
   selector: 'app-items-list',
@@ -12,169 +13,205 @@ export class ItemsListComponent implements OnInit {
   filteredItems: Item[] = [];
   loading = false;
   searchTerm = '';
-  selectedType = '';
-  selectedStatus = '';
+  selectedBibliotheque = '';
+  selectedStatutBibliotheque = '';
+  selectedStatutAcq = '';
 
-  // Options pour les filtres
-  typeOptions = [
-    'nouvel_achat_unique',
-    'modification_ccol',
-    'nouvel_abonnement', 
-    'springer',
-    'peb_tipasa',
-    'suggestion_usagers',
-    'requete_accessibilite'
-  ];
 
-  statusOptions = [
-    'En attente',
-    'En cours',
-    'Complété',
-    'Annulé'
-  ];
+   statutBadgeMap: Record<string, string> = {
+    'En attente': 'bg-info',
+    'Complété': 'bg-success',
+    'Demande annulée': 'bg-danger',
+    'Budget atteint': 'bg-warning',
+    'En attente de traitement': 'bg-secondary',
+    'En cours': 'bg-primary'
+  };
 
-  constructor(private itemService: ItemFormulaireService, private router: Router) { }
+  options = new ListeChoixOptions();
+
+  constructor(private itemService: ItemFormulaireService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadItems();
   }
 
-  // Charger tous les items
-  loadItems(): void {
-    this.loading = true;
-    this.itemService.getAll().subscribe({
-      next: (items) => {
-        this.items = items;
-        this.filteredItems = items;
-        this.loading = false;
+loadItems(): void {
+  this.loading = true;
+  console.log('📞 Chargement des items...');
+
+  this.itemService.getAll().subscribe({
+    next: (data: unknown) => {
+      console.log('📦 Données brutes reçues depuis le service :', data);
+
+      // Normaliser les données pour s'assurer que c'est bien un tableau
+      const normalized = this.normalizeItems(data);
+      console.log('🔄 Données après normalisation :', normalized);
+
+      this.items = normalized;
+      this.applyFilters();
+
+      console.log('✅ Items chargés pour affichage :', this.items);
+      this.loading = false;
+    },
+    error: (err) => {
+      console.error('❌ Erreur chargement items', err);
+      this.items = [];
+      this.filteredItems = [];
+      this.loading = false;
+    }
+  });
+}
+
+private normalizeItems(data: any): Item[] {
+  if (Array.isArray(data)) {
+    return data;
+  }
+
+  if (data && typeof data === 'object') {
+    // si le tableau est dans la propriété "data"
+    if (Array.isArray(data.data)) {
+      console.log('✅ Tableau trouvé dans data.data');
+      return data.data;
+    }
+
+    // sinon on essaye Object.values (optionnel)
+    const values = Object.values(data);
+    const items = values.filter(
+      (val: any) =>
+        val && typeof val === 'object' && (val.titre_document || val.item_id)
+    );
+    return items as Item[];
+  }
+
+  return [];
+}
+
+
+  // Applique tous les filtres et recherche
+ applyFilters(): void {
+  this.filteredItems = this.items.filter(item => {
+    const matchesSearch = this.searchTerm
+      ? (item.titre_document?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+         item.isbn_issn?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+         item.demandeur?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+         item.editeur?.toLowerCase().includes(this.searchTerm.toLowerCase()))
+      : true;
+
+    const matchesBib =
+      this.selectedBibliotheque
+        ? item.bibliotheque === this.selectedBibliotheque
+        : true;
+
+    const matchesStatutBib =
+      this.selectedStatutBibliotheque
+        ? item.statut_bibliotheque === this.selectedStatutBibliotheque
+        : true;
+
+    const matchesStatutAcq =
+      this.selectedStatutAcq
+        ? item.statut_acq === this.selectedStatutAcq
+        : true;
+
+    return matchesSearch && matchesBib && matchesStatutBib && matchesStatutAcq;
+  });
+}
+
+
+  onSearch(): void { this.applyFilters(); }
+  onBibliothequeChange(): void { this.applyFilters(); }
+  onStatusChange(): void { this.applyFilters(); }
+
+ resetFilters(): void {
+  this.searchTerm = '';
+  this.selectedBibliotheque = '';
+  this.selectedStatutBibliotheque = '';
+  this.selectedStatutAcq = '';
+  this.applyFilters();
+}
+
+
+  deleteItem(id?: number): void {
+    if (!id) return;
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cet item ?')) return;
+
+    this.itemService.delete(id).subscribe({
+      next: () => {
+        this.items = this.items.filter(item => item.item_id !== id);
+        this.applyFilters();
+        alert('Item supprimé avec succès !');
       },
-      error: (error) => {
-        console.error('Erreur lors du chargement des items:', error);
-        this.loading = false;
+      error: (err) => {
+        console.error('Erreur lors de la suppression:', err);
+        alert('Erreur lors de la suppression de l\'item');
       }
     });
   }
 
-  // Recherche d'items
-  onSearch(): void {
-    if (this.searchTerm.trim()) {
-      this.itemService.search(this.searchTerm).subscribe({
-        next: (items) => {
-          this.filteredItems = items;
-        },
-        error: (error) => {
-          console.error('Erreur lors de la recherche:', error);
-        }
-      });
-    } else {
-      this.filteredItems = this.items;
-    }
-  }
-
-  // Filtrer par type
-  onTypeChange(): void {
-    if (this.selectedType) {
-      this.itemService.getByType(this.selectedType).subscribe({
-        next: (items) => {
-          this.filteredItems = items;
-        },
-        error: (error) => {
-          console.error('Erreur lors du filtrage par type:', error);
-        }
-      });
-    } else {
-      this.filteredItems = this.items;
-    }
-  }
-
-  // Filtrer par statut
-  onStatusChange(): void {
-    if (this.selectedStatus) {
-      this.itemService.getByStatus(this.selectedStatus).subscribe({
-        next: (items) => {
-          this.filteredItems = items;
-        },
-        error: (error) => {
-          console.error('Erreur lors du filtrage par statut:', error);
-        }
-      });
-    } else {
-      this.filteredItems = this.items;
-    }
-  }
-
-  // Réinitialiser les filtres
-  resetFilters(): void {
-    this.searchTerm = '';
-    this.selectedType = '';
-    this.selectedStatus = '';
-    this.filteredItems = this.items;
-  }
-
-  // Supprimer un item
-  deleteItem(id: number | undefined): void {
+  viewItem(id?: number): void {
     if (!id) return;
-    
-    if (confirm('Êtes-vous sûr de vouloir supprimer cet item ?')) {
-      this.itemService.delete(id).subscribe({
-        next: () => {
-          this.items = this.items.filter(item => item.id_item !== id);
-          this.filteredItems = this.filteredItems.filter(item => item.id_item !== id);
-        },
-        error: (error) => {
-          console.error('Erreur lors de la suppression:', error);
-        }
-      });
+    this.router.navigate(['/items', id]);
+  }
+
+  trackByItemId(index: number, item: Item): number {
+    return item.item_id || index;
+  }
+
+  formatDate(dateString?: string): string {
+    if (!dateString) return 'Non spécifié';
+    try {
+      return new Date(dateString).toLocaleDateString('fr-CA', { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch {
+      return dateString;
     }
   }
 
-  // Consulter un item
-  viewItem(id: number | undefined): void {
-    if (!id) return;
-    
-    this.itemService.consulter(id).subscribe({
-      next: (item) => {
-        // Rediriger vers la page de détail ou ouvrir un modal
-        //console.log('Item consulté:', item);
-        this.router.navigate(['/items', id]);
-      },
-      error: (error) => {
-        console.error('Erreur lors de la consultation:', error);
-      }
-    });
+  getStatusBadgeClass(status?: string): string {
+    if (!status) return 'badge bg-light text-dark';
+    if (status.includes('Saisie en cours')) return 'badge bg-warning';
+    if (status.includes('En attente')) return 'badge bg-info';
+    if (status.includes('Soumis aux ACQ') || status.includes('Complété')) return 'badge bg-success';
+    if (status.includes('Demande annulée')) return 'badge bg-danger';
+    if (status.includes('Budget atteint')) return 'badge bg-secondary';
+    return 'badge bg-light text-dark';
   }
 
-  // Formater le prix
-  formatPrice(price: number | undefined): string {
-    return price ? `$${price.toFixed(2)}` : 'Non spécifié';
+  getStatusText(status?: string): string {
+    if (!status) return 'Non spécifié';
+    if (status.includes('Saisie en cours')) return 'Saisie en cours';
+    if (status.includes('En attente')) return 'En attente';
+    if (status.includes('Soumis aux ACQ')) return 'Soumis ACQ';
+    if (status.includes('Complété')) return 'Complété';
+    if (status.includes('Demande annulée')) return 'Annulé';
+    if (status.includes('Budget atteint')) return 'Budget atteint';
+    return status;
   }
 
-  // Formater la date
-  formatDate(dateString: string | undefined): string {
-    if (!dateString) return 'Date inconnue';
-    return new Date(dateString).toLocaleDateString('fr-CA');
+  getDocumentCategory(category?: string): string {
+    if (!category) return '';
+    const abbreviations: { [key: string]: string } = {
+      'Monographie': 'MONO',
+      'Périodique': 'PERIO',
+      'Base de données': 'BD',
+      'Archives de périodiques': 'ARCH_PER',
+      'Archives de monographies': 'ARCH_MONO'
+    };
+    return abbreviations[category] || category.substring(0, 4).toUpperCase();
   }
 
-  // CORRECTION : Gérer les valeurs undefined
-  getStatusBadgeClass(status: string | undefined): string {
-    const actualStatus = status || 'En attente';
-    
-    switch (actualStatus) {
-      case 'En attente':
-        return 'badge status-pending';
-      case 'En cours':
-        return 'badge status-in-progress';
-      case 'Complété':
-        return 'badge status-completed';
-      case 'Annulé':
-        return 'badge status-cancelled';
-      default:
-        return 'badge bg-warning';
-    }
+  getFormatSupport(format?: string): string {
+    if (!format) return '';
+    return format === 'Imprimé/support physique' ? 'Imprimé'
+         : format === 'Électronique' ? 'Électronique'
+         : format;
   }
 
-  // Méthode pour obtenir le texte du statut
-  getStatusText(status: string | undefined): string {
-    return status || 'En attente';
-  }
+  getStatutsUniques(): string[] {
+    return [
+      ...new Set(
+        this.filteredItems
+          .map(item => item.statut_bibliotheque)
+          .filter((statut): statut is string => Boolean(statut))
+      )
+    ];
+}
 }

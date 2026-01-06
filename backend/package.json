@@ -46,6 +46,7 @@
     "passport": "^0.7.0",
     "passport-azure-oauth2": "^0.1.0",
     "passport-google-oauth20": "^2.0.0",
+    "pg": "^8.16.3",
     "proxy-check": "^1.0.8",
     "redis": "^4.0.1",
     "request-promise": "^0.0.1",

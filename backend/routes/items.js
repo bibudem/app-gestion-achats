@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require('../config/supabase.config');
 
 console.log('🛣️ Initialisation des routes items...');
 
@@ -16,90 +15,81 @@ try {
     postItems: (req, res) => res.status(500).json({ error: 'Contrôleur non disponible' }),
     putItems: (req, res) => res.status(500).json({ error: 'Contrôleur non disponible' }),
     deleteItems: (req, res) => res.status(500).json({ error: 'Contrôleur non disponible' }),
-    consulterItems: (req, res) => res.status(500).json({ error: 'Contrôleur non disponible' })
+    consulterItems: (req, res) => res.status(500).json({ error: 'Contrôleur non disponible' }),
+    getAllItems: (req, res) => res.status(500).json({ error: 'Contrôleur non disponible' }),
+    searchItems: (req, res) => res.status(500).json({ error: 'Contrôleur non disponible' }),
+    getItemsByType: (req, res) => res.status(500).json({ error: 'Contrôleur non disponible' }),
+    getItemsByStatus: (req, res) => res.status(500).json({ error: 'Contrôleur non disponible' })
   };
 }
 
 // Vérifier que le contrôleur a les méthodes nécessaires
-const requiredMethods = ['postItems', 'putItems', 'deleteItems', 'consulterItems'];
+const requiredMethods = [
+  'postItems', 
+  'putItems', 
+  'deleteItems', 
+  'consulterItems',
+  'getAllItems',
+  'searchItems',
+  'getItemsByType',
+  'getItemsByStatus'
+];
+
 requiredMethods.forEach(method => {
   if (typeof itemsController[method] !== 'function') {
     console.error(`❌ Méthode manquante: ${method}`);
-    itemsController[method] = (req, res) => res.status(500).json({ error: `Méthode ${method} non implémentée` });
+    itemsController[method] = (req, res) => 
+      res.status(500).json({ error: `Méthode ${method} non implémentée` });
   }
 });
 
-// Définir les routes
+// ==================== ROUTES CRUD ====================
+
+// CREATE - Ajouter un nouvel item
 router.post('/add', itemsController.postItems);
-router.put('/save/:id', itemsController.putItems);
-router.delete('/delete/:id', itemsController.deleteItems);
+
+// READ - Consulter un item par ID
 router.get('/fiche/:id', itemsController.consulterItems);
 
-// Nouvelles routes pour la liste
-router.get('/all', async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from('tbl_items')
-      .select('*')
-      .order('date_creation', { ascending: false });
+// UPDATE - Modifier un item
+router.put('/save/:id', itemsController.putItems);
 
-    if (error) throw error;
-    res.json(data);
-  } catch (error) {
-    console.error('Erreur GET /all:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
+// DELETE - Supprimer un item
+router.delete('/delete/:id', itemsController.deleteItems);
 
-router.get('/search', async (req, res) => {
-  try {
-    const { q } = req.query;
-    const { data, error } = await supabase
-      .from('tbl_items')
-      .select('*')
-      .or(`titre_document.ilike.%${q}%,auteur.ilike.%${q}%,isbn_issn.ilike.%${q}%`)
-      .order('date_creation', { ascending: false });
+// ==================== ROUTES DE LISTING ====================
 
-    if (error) throw error;
-    res.json(data);
-  } catch (error) {
-    console.error('Erreur GET /search:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
+// GET ALL - Récupérer tous les items avec pagination
+router.get('/all', itemsController.getAllItems);
 
-router.get('/type/:type', async (req, res) => {
-  try {
-    const { type } = req.params;
-    const { data, error } = await supabase
-      .from('tbl_items')
-      .select('*')
-      .eq('type_formulaire', type)
-      .order('date_creation', { ascending: false });
+// SEARCH - Rechercher des items
+router.get('/search', itemsController.searchItems);
 
-    if (error) throw error;
-    res.json(data);
-  } catch (error) {
-    console.error('Erreur GET /type:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
+// FILTER BY TYPE - Filtrer par type de formulaire
+router.get('/type/:type', itemsController.getItemsByType);
 
-router.get('/status/:status', async (req, res) => {
-  try {
-    const { status } = req.params;
-    const { data, error } = await supabase
-      .from('tbl_items')
-      .select('*')
-      .eq('bib_statut_demande', status)
-      .order('date_creation', { ascending: false });
+// FILTER BY STATUS - Filtrer par statut
+router.get('/status/:status', itemsController.getItemsByStatus);
 
-    if (error) throw error;
-    res.json(data);
-  } catch (error) {
-    console.error('Erreur GET /status:', error);
-    res.status(500).json({ error: error.message });
-  }
+// ==================== ROUTE DE TEST ====================
+
+// Route de test pour vérifier que les routes fonctionnent
+router.get('/test', (req, res) => {
+  res.json({
+    message: 'Routes items fonctionnelles',
+    database: 'PostgreSQL',
+    timestamp: new Date().toISOString(),
+    routes: {
+      create: 'POST /api/items/add',
+      read: 'GET /api/items/fiche/:id',
+      update: 'PUT /api/items/save/:id',
+      delete: 'DELETE /api/items/delete/:id',
+      list: 'GET /api/items/all',
+      search: 'GET /api/items/search?q=terme',
+      byType: 'GET /api/items/type/:type',
+      byStatus: 'GET /api/items/status/:status'
+    }
+  });
 });
 
 console.log('✅ Routes items configurées avec succès');
