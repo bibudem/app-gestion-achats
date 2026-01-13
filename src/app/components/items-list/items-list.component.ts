@@ -14,8 +14,8 @@ export class ItemsListComponent implements OnInit {
   loading = false;
   searchTerm = '';
   selectedBibliotheque = '';
-  selectedStatutBibliotheque = '';
-  selectedStatutAcq = '';
+  selectedStatut = '';
+  selectedFormulaireType = '';
 
 
    statutBadgeMap: Record<string, string> = {
@@ -102,17 +102,16 @@ private normalizeItems(data: any): Item[] {
         ? item.bibliotheque === this.selectedBibliotheque
         : true;
 
-    const matchesStatutBib =
-      this.selectedStatutBibliotheque
-        ? item.statut_bibliotheque === this.selectedStatutBibliotheque
-        : true;
+    const matchesStatut = this.selectedStatut
+      ? (item.statut_bibliotheque === this.selectedStatut || item.statut_acq === this.selectedStatut)
+      : true;
 
-    const matchesStatutAcq =
-      this.selectedStatutAcq
-        ? item.statut_acq === this.selectedStatutAcq
-        : true;
+    const matchesFormulaireType = 
+      this.selectedFormulaireType 
+        ? item.formulaire_type === this.selectedFormulaireType : true;
 
-    return matchesSearch && matchesBib && matchesStatutBib && matchesStatutAcq;
+    return matchesSearch && matchesBib && matchesStatut && matchesFormulaireType;
+    
   });
 }
 
@@ -124,11 +123,10 @@ private normalizeItems(data: any): Item[] {
  resetFilters(): void {
   this.searchTerm = '';
   this.selectedBibliotheque = '';
-  this.selectedStatutBibliotheque = '';
-  this.selectedStatutAcq = '';
+  this.selectedStatut = '';
+  this.selectedFormulaireType = '';
   this.applyFilters();
 }
-
 
   deleteItem(id?: number): void {
     if (!id) return;

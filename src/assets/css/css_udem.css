@@ -67,3 +67,8 @@ select.form-control, .select2-container--default select.select2-selection--singl
     background-color: #246405;
     border-color: #246405;
 }
+
+.content-wrapper
+ {
+    padding: 0 1rem 1rem!important;
+}

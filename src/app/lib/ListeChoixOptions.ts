@@ -143,6 +143,17 @@ statusOptions = [
     'Oui'
   ];
 
+  // Options pour le type de formulaire Mentor (provenant du fichier Excel)
+formulaireTypeOptions = [
+  'Nouvel achat unique',
+  'Modification CCOL',
+  'Nouvel abonnement',
+  'Springer',
+  'PEB Tipasa numérique',
+  'Suggestion d\'achat',
+  'Requête ACQ'
+];
+
   listProgramme = [
     { id: 1, name: "EBA - Achat sectoriel (Add On)" },
     { id: 2, name: "BCI" },

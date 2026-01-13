@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid bg-white p-4">
   <!-- En-tête -->
   <div class="row mb-4 mt-5">
     <div class="col-md-12 mt-3">
@@ -32,16 +32,54 @@
   <!-- Formulaire -->
   <form [formGroup]="itemForm" *ngIf="!loading" class="needs-validation" novalidate>
     
-    <!-- Onglet unique pour tous les champs -->
-    <div class="card mb-4">
-      <div class="card-header bg-light border-bottom">
-        <h5 class="mb-0 mt-2">Informations de base</h5>
-      </div>
-      <div class="card-body p-4">
-        
+    <!-- Navigation par onglets -->
+    <ul class="nav nav-tabs mb-4" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [class.active]="activeTab === 'base'" 
+                type="button" (click)="setActiveTab('base')">
+          <i class="bi bi-file-text me-2"></i>Informations de base
+        </button>
+      </li>
+      <li class="nav-item" role="presentation" *ngIf="selectedFormulaireType">
+        <button class="nav-link" [class.active]="activeTab === 'specifique'" 
+                type="button" (click)="setActiveTab('specifique')">
+          <i class="bi bi-gear me-2"></i>Champs spécifiques
+        </button>
+      </li>
+    </ul>
+
+    <!-- Contenu des onglets -->
+    <div class="tab-content">
+      
+      <!-- ========== ONGLET 1: INFORMATIONS DE BASE ========== -->
+      <div class="tab-pane fade" [class.show]="activeTab === 'base'" [class.active]="activeTab === 'base'">
+        <div class="row mb-4">
+          <div class="col-12">
+            <h5 class="mb-3 pb-2 border-bottom">Informations de base</h5>
+          </div>
+        </div>
+
         <!-- Rangée 1 : Informations obligatoires -->
         <div class="row">
-          <div class="col-md-8">
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                <span class="text-danger">*</span> Type de formulaire
+              </label>
+              <select class="form-select form-control" formControlName="formulaire_type"
+                      [class.is-invalid]="hasError('formulaire_type', 'required')">
+                <option value="">Sélectionnez</option>
+                <option *ngFor="let type of options.formulaireTypeOptions" [value]="type">{{ type }}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="hasError('formulaire_type', 'required')">
+                Le type de formulaire est obligatoire
+              </div>
+              <small class="text-muted" *ngIf="isEditMode">
+                <i class="bi bi-info-circle me-1"></i>Le type de formulaire ne peut pas être modifié
+              </small>
+            </div>
+          </div>
+          <div class="col-md-4">
             <div class="mb-3">
               <label class="form-label fw-semibold">Titre du document <span class="text-danger">*</span></label>
               <input type="text" class="form-control" formControlName="titre_document"
@@ -81,7 +119,7 @@
                      placeholder="Nom de l'éditeur">
             </div>
           </div>
-           <div class="col-md-2">
+          <div class="col-md-2">
             <div class="mb-3">
               <label class="form-label fw-semibold">ISBN/ISSN</label>
               <input type="text" class="form-control" formControlName="isbn_issn" 
@@ -132,7 +170,8 @@
             </div>
           </div>
         </div>
-        <!-- Rangée 5 : Bibliothèque et Localisation -->
+
+        <!-- Rangée 4 : Bibliothèque et Localisation -->
         <div class="row mb-3">
           <div class="col-md-3">
             <div class="mb-3">
@@ -168,9 +207,10 @@
             </div>
           </div>
         </div>
-           <!-- Rangée 9 : Statuts -->
+
+        <!-- Rangée 5 : Statuts -->
         <div class="row">
-           <div class="col-md-3">
+          <div class="col-md-3">
             <div class="mb-3">
               <label class="form-label fw-semibold">Fonds budgétaire <span class="text-danger">*</span></label>
               <input type="text" class="form-control" formControlName="fonds_budgetaire"
@@ -198,18 +238,18 @@
           </div>
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Statut ACQ </label>
+              <label class="form-label fw-semibold">Statut ACQ</label>
               <select class="form-select form-control" formControlName="statut_acq">
                 <option value="">Sélectionnez</option>
-                <option *ngFor="let statut of options.dircolAcqStatutOptions"
-                        [value]="statut">
+                <option *ngFor="let statut of options.dircolAcqStatutOptions" [value]="statut">
                   {{ statut }}
                 </option>
               </select>
             </div>
           </div>
         </div>
-        <!-- Rangée 7 : Personnes à aviser -->
+
+        <!-- Rangée 6 : Personnes à aviser -->
         <div class="row mb-3">
           <div class="col-md-4">
             <div class="mb-3">
@@ -231,7 +271,7 @@
           </div>
         </div>
 
-        <!-- Rangée 10 : Notes -->
+        <!-- Rangée 7 : Notes -->
         <div class="row mb-3">
           <div class="col-md-6">
             <div class="mb-3">
@@ -247,22 +287,388 @@
           </div>
         </div>
 
-        <!-- Rangée 11 : Métadonnées (lecture seule si édition) -->
+        <!-- Métadonnées (lecture seule si édition) -->
         <div *ngIf="isEditMode" class="row mb-3 mt-5">
           <div class="col-md-6">
             <div class="mb-3">
-              <label class="form-label text-info">Date de création: {{itemForm.get('date_creation')?.value | date:'yyyy-MM-dd HH:mm'}} </label>
-              <br>
+              <label class="form-label text-dark">Date de création: {{itemForm.get('date_creation')?.value | date:'yyyy-MM-dd HH:mm'}}</label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3 text-end">
               <label class="form-label text-warning">Dernière modification: {{itemForm.get('date_modification')?.value | date:'yyyy-MM-dd HH:mm'}}</label>
             </div>
           </div>
         </div>
+      </div>
 
+      <!-- ========== ONGLET 2: CHAMPS SPÉCIFIQUES ========== -->
+      <div class="tab-pane fade" [class.show]="activeTab === 'specifique'" [class.active]="activeTab === 'specifique'">
+        
+        <!-- Message si aucun type sélectionné -->
+        <div *ngIf="!selectedFormulaireType" class="alert alert-info">
+          <i class="bi bi-info-circle me-2"></i>
+          Veuillez d'abord sélectionner un type de formulaire dans l'onglet "Informations de base"
+        </div>
+
+        <!-- ===== MODIFICATION CCOL ===== -->
+        <div *ngIf="isModificationCCOL()">
+          <div class="row mb-4">
+            <div class="col-12">
+              <h5 class="mb-3 pb-2 border-bottom">
+                <i class="bi bi-pencil-square me-2"></i>Modification CCOL
+              </h5>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-12">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  <span class="text-danger">*</span> Précision de la demande
+                </label>
+                <textarea class="form-control" formControlName="precision_demande" rows="4"
+                          [class.is-invalid]="hasError('precision_demande', 'required')"
+                          placeholder="Décrivez précisément la modification demandée"></textarea>
+                <div class="invalid-feedback">
+                  La précision de la demande est obligatoire
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Numéro OCLC</label>
+                <input type="text" class="form-control" formControlName="numero_oclc"
+                       placeholder="Ex: ocm12345678">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Collection</label>
+                <input type="text" class="form-control" formControlName="collection" >
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Catalogage</label>
+                <input type="text" class="form-control" formControlName="catalogage" >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== NOUVEL ABONNEMENT ===== -->
+        <div *ngIf="isNouvelAbonnement()">
+          <div class="row mb-4">
+            <div class="col-12">
+              <h5 class="mb-3 pb-2 border-bottom">
+                <i class="bi bi-calendar-check me-2"></i>Nouvel Abonnement
+              </h5>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  <span class="text-danger">*</span> Date de début d'abonnement
+                </label>
+                <input type="date" class="form-control" formControlName="date_debut_abonnement"
+                       [class.is-invalid]="hasError('date_debut_abonnement', 'required')">
+                <div class="invalid-feedback">
+                  La date de début d'abonnement est obligatoire
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Type de monographie</label>
+                <select class="form-select form-control" formControlName="type_monographie">
+                  <option value="">Sélectionnez</option>
+                  <option value="Série">Série</option>
+                  <option value="Périodique">Périodique</option>
+                  <option value="Monographie en série">Monographie en série</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Collection</label>
+                <input type="text" class="form-control" formControlName="collection" >
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Catalogage</label>
+                <input type="text" class="form-control" formControlName="catalogage">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== NOUVEL ACHAT UNIQUE ===== -->
+        <div *ngIf="isNouvelAchatUnique()">
+          <div class="row mb-4">
+            <div class="col-12">
+              <h5 class="mb-3 pb-2 border-bottom">
+                <i class="bi bi-cart-plus me-2"></i>Nouvel Achat Unique
+              </h5>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Projets spéciaux</label>
+                <input type="text" class="form-control" formControlName="projets_speciaux">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Type de monographie</label>
+                <select class="form-select form-control" formControlName="type_monographie">
+                  <option value="">Sélectionnez</option>
+                  <option value="Monographie">Monographie</option>
+                  <option value="Série">Série</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Format électronique</label>
+                <select class="form-select form-control" formControlName="format_electronique">
+                  <option value="">Sélectionnez</option>
+                  <option value="PDF">PDF</option>
+                  <option value="EPUB">EPUB</option>
+                  <option value="Autre">Autre</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Bordereau imprimé</label>
+                <input type="text" class="form-control" formControlName="bordereau_imprime">
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-12">
+              <div class="mb-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" formControlName="reserve_cours" 
+                         id="reserveCours">
+                  <label class="form-check-label fw-semibold" for="reserveCours">
+                    Réserve de cours
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row" *ngIf="itemForm.get('reserve_cours')?.value">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Sigle du cours</label>
+                <input type="text" class="form-control" formControlName="reserve_cours_sigle"
+                       placeholder="Ex: INF1234">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Session</label>
+                <input type="text" class="form-control" formControlName="reserve_cours_session"
+                       placeholder="Ex: Automne 2024">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Enseignant</label>
+                <textarea class="form-control" formControlName="reserve_cours_enseignant" rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Catégorie de dépense</label>
+                <input type="text" class="form-control" formControlName="categorie_depense">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Note catalogueur droit</label>
+                <textarea class="form-control" formControlName="note_catalogueur_droit" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== PEB TIPASA NUMÉRIQUE ===== -->
+        <div *ngIf="isPEBTipasaNumerique()">
+          <div class="row mb-4">
+            <div class="col-12">
+              <h5 class="mb-3 pb-2 border-bottom">
+                <i class="bi bi-share me-2"></i>PEB Tipasa Numérique
+              </h5>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Type de demande PEB</label>
+                <select class="form-select form-control" formControlName="type_demande_peb">
+                  <option value="">Sélectionnez</option>
+                  <option value="Prêt">Prêt</option>
+                  <option value="Copie">Copie</option>
+                  <option value="Numérique">Numérique</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Référence Tipasa</label>
+                <input type="text" class="form-control" formControlName="reference_tipasa"
+                       placeholder="Numéro de référence">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Urgence</label>
+                <select class="form-select form-control" formControlName="urgence">
+                  <option [ngValue]="false">Non</option>
+                  <option [ngValue]="true">Oui</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== REQUÊTE ACQ ===== -->
+        <div *ngIf="isRequeteACQ()">
+          <div class="row mb-4">
+            <div class="col-12">
+              <h5 class="mb-3 pb-2 border-bottom">
+                <i class="bi bi-question-circle me-2"></i>Requête ACQ
+              </h5>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-12">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Type de requête</label>
+                <select class="form-select form-control" formControlName="type_requete">
+                  <option value="">Sélectionnez</option>
+                  <option value="Information">Information</option>
+                  <option value="Modification">Modification</option>
+                  <option value="Annulation">Annulation</option>
+                  <option value="Autre">Autre</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Description de la requête</label>
+                <textarea class="form-control" formControlName="description_requete" rows="2"
+                          placeholder="Décrivez votre requête en détail"></textarea>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Action demandée</label>
+                <textarea class="form-control" formControlName="action_demandee" rows="2"
+                          placeholder="Quelle action souhaitez-vous?"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SPRINGER ===== -->
+        <div *ngIf="isSpringer()">
+          <div class="row mb-4">
+            <div class="col-12">
+              <h5 class="mb-3 pb-2 border-bottom">
+                <i class="bi bi-book me-2"></i>Springer
+              </h5>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  <span class="text-danger">*</span> Quantité
+                </label>
+                <input type="number" class="form-control" formControlName="quantite" min="1"
+                       [class.is-invalid]="hasError('quantite', 'required') || hasError('quantite', 'min')"
+                       placeholder="Nombre d'exemplaires">
+                <div class="invalid-feedback" *ngIf="hasError('quantite', 'required')">
+                  La quantité est obligatoire
+                </div>
+                <div class="invalid-feedback" *ngIf="hasError('quantite', 'min')">
+                  La quantité doit être d'au moins 1
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SUGGESTION D'ACHAT ===== -->
+        <div *ngIf="isSuggestionAchat()">
+          <div class="row mb-4">
+            <div class="col-12">
+              <h5 class="mb-3 pb-2 border-bottom">
+                <i class="bi bi-lightbulb me-2"></i>Suggestion d'Achat
+              </h5>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-12">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Justification</label>
+                <textarea class="form-control" formControlName="justification" rows="4"
+                          placeholder="Expliquez pourquoi cet achat est pertinent"></textarea>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Public cible</label>
+                <input type="text" class="form-control" formControlName="public_cible"
+                       placeholder="Ex: Étudiants de 1er cycle">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Recommandation</label>
+                <select class="form-select form-control" formControlName="recommandation">
+                  <option [ngValue]="false">Non</option>
+                  <option [ngValue]="true">Oui</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Boutons d'action -->
-    <div class="row mb-5 mt-3">
+    <div class="row mb-5 mt-4">
       <div class="col-12">
         <div class="d-flex justify-content-between align-items-center">
           <div>
@@ -271,7 +677,18 @@
             </button>
           </div>
           <div class="d-flex gap-2">
-            <button type="button" class="btn btn-success" (click)="onSubmit()" [disabled]="submitting || itemForm.invalid">
+            <button type="button" class="btn btn-outline-primary" 
+                    *ngIf="activeTab === 'specifique' && selectedFormulaireType"
+                    (click)="setActiveTab('base')">
+              <i class="bi bi-arrow-left me-1"></i> Retour aux infos de base
+            </button>
+            <button type="button" class="btn btn-primary" 
+                    *ngIf="activeTab === 'base' && selectedFormulaireType"
+                    (click)="setActiveTab('specifique')">
+              Champs spécifiques <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+            <button type="button" class="btn btn-success" (click)="onSubmit()" 
+                    [disabled]="submitting || itemForm.invalid">
               <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
               <i class="bi bi-check-lg me-1" *ngIf="!submitting"></i>
               {{ isEditMode ? 'Modifier l\'item' : 'Créer l\'item' }}
