@@ -37,13 +37,13 @@
       <li class="nav-item" role="presentation">
         <button class="nav-link" [class.active]="activeTab === 'base'" 
                 type="button" (click)="setActiveTab('base')">
-          <i class="bi bi-file-text me-2"></i>Informations de base
+          Informations de base
         </button>
       </li>
       <li class="nav-item" role="presentation" *ngIf="selectedFormulaireType">
         <button class="nav-link" [class.active]="activeTab === 'specifique'" 
                 type="button" (click)="setActiveTab('specifique')">
-          <i class="bi bi-gear me-2"></i>Champs spécifiques
+          Champs spécifiques
         </button>
       </li>
     </ul>
@@ -673,7 +673,7 @@
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
-              <i class="bi bi-x-circle me-1"></i> Annuler
+               Annuler
             </button>
           </div>
           <div class="d-flex gap-2">

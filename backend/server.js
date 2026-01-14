@@ -7,13 +7,23 @@ console.log('🚀 Démarrage du serveur...');
 // Import avec gestion d'erreur
 let itemsRoutes;
 let validationMiddleware;
+let homeRoutes;
 
 try {
   itemsRoutes = require('./routes/items');
-  console.log('✅ Routes items chargées');
+  //console.log('✅ Routes items chargées');
 } catch (error) {
   console.error('❌ Erreur chargement routes:', error.message);
   process.exit(1);
+}
+
+// AJOUTEZ CE BLOC POUR LES ROUTES HOME
+try {
+  homeRoutes = require('./routes/home');
+  //console.log('Routes home chargées');
+} catch (error) {
+  console.error('⚠️ Routes home non chargées (optionnel):', error.message);
+  // Ne pas quitter, c'est optionnel pour le moment
 }
 
 try {
@@ -50,13 +60,19 @@ app.set('trust proxy', '10.139.33.12');
 // Rate limiting (si disponible)
 if (validationMiddleware && validationMiddleware.apiLimiter) {
   app.use('/api', validationMiddleware.apiLimiter);
-  console.log('✅ Rate limiting activé');
+  console.log('Rate limiting activé');
 }
 
 /* ---------------------- ROUTES ----------------------- */
 if (itemsRoutes) {
   app.use('/api/items', itemsRoutes);
-  console.log('✅ Routes /api/items configurées');
+  console.log('Routes /api/items configurées');
+}
+
+// Routes du dashboard home (NOUVEAU)
+if (homeRoutes) {
+  app.use('/api/home', homeRoutes);
+  console.log('Routes /api/home configurées');
 }
 
 // Route de santé
