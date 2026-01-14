@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Item, ItemFormulaireService } from '../../services/items-formulaire.service';
 import { ListeChoixOptions } from '../../lib/ListeChoixOptions';
+import { DialogService } from '../../services/dialog.service';
 
 @Component({
   selector: 'app-items-list',
@@ -29,7 +30,9 @@ export class ItemsListComponent implements OnInit {
 
   options = new ListeChoixOptions();
 
-  constructor(private itemService: ItemFormulaireService, private router: Router) {}
+  constructor(private itemService: ItemFormulaireService, 
+              private router: Router, 
+              private dialogService: DialogService) {}
 
   ngOnInit(): void {
     this.loadItems();
@@ -45,12 +48,9 @@ loadItems(): void {
 
       // Normaliser les données pour s'assurer que c'est bien un tableau
       const normalized = this.normalizeItems(data);
-      console.log('🔄 Données après normalisation :', normalized);
 
       this.items = normalized;
       this.applyFilters();
-
-      console.log('✅ Items chargés pour affichage :', this.items);
       this.loading = false;
     },
     error: (err) => {
@@ -70,7 +70,7 @@ private normalizeItems(data: any): Item[] {
   if (data && typeof data === 'object') {
     // si le tableau est dans la propriété "data"
     if (Array.isArray(data.data)) {
-      console.log('✅ Tableau trouvé dans data.data');
+      //console.log('✅ Tableau trouvé dans data.data');
       return data.data;
     }
 
@@ -128,22 +128,33 @@ private normalizeItems(data: any): Item[] {
   this.applyFilters();
 }
 
-  deleteItem(id?: number): void {
-    if (!id) return;
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cet item ?')) return;
+ async deleteItem(id?: number): Promise<void> {
+  if (!id) return;
 
-    this.itemService.delete(id).subscribe({
-      next: () => {
-        this.items = this.items.filter(item => item.item_id !== id);
-        this.applyFilters();
-        alert('Item supprimé avec succès !');
-      },
-      error: (err) => {
-        console.error('Erreur lors de la suppression:', err);
-        alert('Erreur lors de la suppression de l\'item');
-      }
-    });
+  const confirmed = await this.dialogService.confirm(
+    'Êtes-vous sûr de vouloir supprimer cet item ?',
+    'Confirmer',
+  );
+
+  if (!confirmed) {
+    return; 
   }
+
+  this.itemService.delete(id).subscribe({
+    next: () => {
+      this.items = this.items.filter(item => item.item_id !== id);
+      this.applyFilters();
+      this.dialogService.showInfo('Item supprimé avec succès');
+    },
+    error: err => {
+      console.error('Erreur lors de la suppression :', err);
+      this.dialogService.showError('Erreur lors de la suppression de l\'item');
+    }
+  });
+}
+
+
+
 
   viewItem(id?: number): void {
     if (!id) return;

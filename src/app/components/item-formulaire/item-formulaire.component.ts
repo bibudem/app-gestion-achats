@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Item, ItemFormulaireService, ApiResponse } from '../../services/items-formulaire.service';
 import { ListeChoixOptions } from '../../lib/ListeChoixOptions';
+import { DialogService } from '../../services/dialog.service';
 
 @Component({
   selector: 'app-item-formulaire',
@@ -24,7 +25,8 @@ export class ItemFormulaireComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private itemService: ItemFormulaireService
+    private itemService: ItemFormulaireService,
+    private dialogService: DialogService
   ) {
     this.itemForm = this.createForm();
   }
@@ -139,7 +141,7 @@ export class ItemFormulaireComponent implements OnInit {
     });
   }
 
-onFormulaireTypeChange(type: string): void {
+  onFormulaireTypeChange(type: string): void {
     this.selectedFormulaireType = type;
 
     // Réinitialiser tous les champs spécifiques
@@ -176,11 +178,9 @@ onFormulaireTypeChange(type: string): void {
         break;
 
       default:
-        // Aucun champ spécifique requis pour d'autres types
         break;
     }
 
-    // Mettre à jour la validité de tous les champs affectés
     const specificFieldsToUpdate = [
       'precision_demande', 'date_debut_abonnement', 'type_monographie',
       'quantite', 'type_demande_peb', 'type_requete', 'justification'
@@ -190,8 +190,7 @@ onFormulaireTypeChange(type: string): void {
       const control = this.itemForm.get(field);
       if (control) control.updateValueAndValidity({ emitEvent: false });
     });
-}
-
+  }
 
   resetSpecificFields(): void {
     const specificFields = [
@@ -214,7 +213,6 @@ onFormulaireTypeChange(type: string): void {
     });
   }
 
-  // Méthodes pour vérifier quel type de formulaire est sélectionné
   isModificationCCOL(): boolean {
     return this.selectedFormulaireType === 'Modification CCOL';
   }
@@ -250,43 +248,35 @@ onFormulaireTypeChange(type: string): void {
     this.itemService.consulter(this.itemId).subscribe({
       next: (response: ApiResponse<Item>) => {
         if (response.success && response.data) {
-          // Stocker le type avant de patcher
           this.selectedFormulaireType = response.data.formulaire_type || null;
-          
-          // Patcher le formulaire avec toutes les données (base + spécifiques)
-          // emitEvent: false pour éviter de déclencher valueChanges
           this.itemForm.patchValue(response.data, { emitEvent: false });
-          
-          // Désactiver le champ formulaire_type après le chargement
           this.itemForm.get('formulaire_type')?.disable({ emitEvent: false });
         } else {
-          alert('Erreur: ' + (response.error || 'Impossible de charger l\'item'));
+          this.dialogService.showError(response.error || 'Impossible de charger l\'item');
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Erreur lors du chargement:', error);
-        alert('Erreur lors du chargement de l\'item');
+        this.dialogService.showError('Erreur lors du chargement de l\'item');
         this.loading = false;
       }
     });
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.itemForm.invalid) {
       this.markFormGroupTouched();
-      alert('Veuillez remplir tous les champs obligatoires');
+      this.dialogService.showWarning('Veuillez remplir tous les champs obligatoires');
       return;
     }
 
     this.submitting = true;
     const formData = this.itemForm.getRawValue();
 
-    // Séparer les données de base des données spécifiques
     const baseData = this.extractBaseData(formData);
     const specificData = this.extractSpecificData(formData);
 
-    // Créer l'objet complet avec les données séparées
     const itemData = {
       ...baseData,
       specificData: specificData,
@@ -299,17 +289,17 @@ onFormulaireTypeChange(type: string): void {
         next: (response: ApiResponse<Item>) => {
           this.submitting = false;
           if (response.success) {
-            alert('Item modifié avec succès!');
-            this.router.navigate(['/items']);
+            this.dialogService.showSuccess('Item modifié avec succès!');
+            setTimeout(() => this.router.navigate(['/items']), 1500);
           } else {
-            alert('Erreur: ' + (response.error || response.message || 'Erreur inconnue'));
+            this.dialogService.showError(response.error || response.message || 'Erreur inconnue');
           }
         },
         error: (error) => {
           console.error('Erreur lors de la modification:', error);
           this.submitting = false;
           const errorMsg = error.error?.error || error.error?.message || error.message || 'Erreur inconnue';
-          alert('Erreur lors de la modification: ' + errorMsg);
+          this.dialogService.showError('Erreur lors de la modification: ' + errorMsg);
         }
       });
     } else {
@@ -317,23 +307,22 @@ onFormulaireTypeChange(type: string): void {
         next: (response: ApiResponse<Item>) => {
           this.submitting = false;
           if (response.success) {
-            alert('Item créé avec succès!');
-            this.router.navigate(['/items']);
+            this.dialogService.showSuccess('Item créé avec succès!');
+            setTimeout(() => this.router.navigate(['/items']), 1500);
           } else {
-            alert('Erreur: ' + (response.error || response.message || 'Erreur inconnue'));
+            this.dialogService.showError(response.error || response.message || 'Erreur inconnue');
           }
         },
         error: (error) => {
           console.error('Erreur lors de la création:', error);
           this.submitting = false;
           const errorMsg = error.error?.error || error.error?.message || error.message || 'Erreur inconnue';
-          alert('Erreur lors de la création: ' + errorMsg);
+          this.dialogService.showError('Erreur lors de la création: ' + errorMsg);
         }
       });
     }
   }
 
-  // Extraire uniquement les données de la table tbl_items
   private extractBaseData(formData: any): any {
     return {
       formulaire_type: formData.formulaire_type,
@@ -364,7 +353,6 @@ onFormulaireTypeChange(type: string): void {
     };
   }
 
-  // Extraire les données spécifiques selon le type de formulaire
   private extractSpecificData(formData: any): any {
     const type = this.selectedFormulaireType;
     
@@ -432,8 +420,13 @@ onFormulaireTypeChange(type: string): void {
     }
   }
 
-  onCancel(): void {
-    if (confirm('Voulez-vous vraiment annuler ? Les modifications non sauvegardées seront perdues.')) {
+  async onCancel(): Promise<void> {
+    const confirmed = await this.dialogService.confirm(
+      'Voulez-vous vraiment annuler ? Les modifications non sauvegardées seront perdues.',
+      'Confirmer l\'annulation'
+    );
+    
+    if (confirmed) {
       this.router.navigate(['/items']);
     }
   }

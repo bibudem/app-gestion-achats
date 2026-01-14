@@ -97,9 +97,9 @@
             <table class="table table-hover mb-0">
               <thead class="table-light">
                 <tr>
-                  <th>Type formulaire</th>
                   <th>ID</th>
                   <th>Titre</th>
+                  <th>Type formulaire</th>
                   <th>ISBN/ISSN</th>
                   <th>Demandeur</th>
                   <th>Bibliothèque</th>
@@ -111,11 +111,6 @@
               </thead>
               <tbody>
                 <tr *ngFor="let item of filteredItems" class="align-middle">
-                   <td>
-                      <span *ngIf="item.formulaire_type" class="badge bg-primary text-light">
-                        {{ item.formulaire_type }}
-                      </span>
-                    </td>
                   <td class="fw-semibold text-muted">
                     #{{ item.item_id }}
                   </td>
@@ -126,6 +121,9 @@
                         • {{ getFormatSupport(item.format_support) }}
                       </span>
                     </div>
+                  </td>
+                  <td>
+                    {{ item.formulaire_type }}
                   </td>
                   <td>
                     <div>{{ item.isbn_issn || 'Non spécifié' }}</div>

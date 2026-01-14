@@ -40,7 +40,9 @@ import {ListFournisseursComponent} from "./components/configuration/fournisseurs
 import {ListBoxModule} from "@syncfusion/ej2-angular-dropdowns";
 import { RouterModule } from '@angular/router';
 import { ItemsListComponent } from './components/items-list/items-list.component';
-import { ItemFormulaireComponent } from './components/item-formulaire/item-formulaire.component'; // ← AJOUTER CET IMPORT
+import { ItemFormulaireComponent } from './components/item-formulaire/item-formulaire.component';
+import { DialogComponent } from './components/dialog/dialog.component';
+import { DialogService } from './services/dialog.service';
 
 @NgModule({
   declarations: [
@@ -59,7 +61,8 @@ import { ItemFormulaireComponent } from './components/item-formulaire/item-formu
     ListFournisseursComponent,
     ListFondsComponent,
     ItemsListComponent,
-    ItemFormulaireComponent
+    ItemFormulaireComponent,
+    DialogComponent
   ],
     imports: [
         RouterModule,
@@ -85,6 +88,7 @@ import { ItemFormulaireComponent } from './components/item-formulaire/item-formu
     ],
   providers: [
     CurrencyPipe, 
+    DialogService,
     AuthGuard,
     AdminGuard,
     { provide: LOCALE_ID, useValue: "fr-FR" }
