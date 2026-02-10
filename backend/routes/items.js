@@ -80,18 +80,18 @@ router.get('/test', (req, res) => {
     database: 'PostgreSQL',
     timestamp: new Date().toISOString(),
     routes: {
-      create: 'POST /api/items/add',
-      read: 'GET /api/items/fiche/:id',
-      update: 'PUT /api/items/save/:id',
-      delete: 'DELETE /api/items/delete/:id',
-      list: 'GET /api/items/all',
-      search: 'GET /api/items/search?q=terme',
-      byType: 'GET /api/items/type/:type',
-      byStatus: 'GET /api/items/status/:status'
+      create: 'POST /items/add',
+      read: 'GET /items/fiche/:id',
+      update: 'PUT /items/save/:id',
+      delete: 'DELETE /items/delete/:id',
+      list: 'GET /items/all',
+      search: 'GET /items/search?q=terme',
+      byType: 'GET /items/type/:type',
+      byStatus: 'GET /items/status/:status'
     }
   });
 });
 
-console.log('✅ Routes items configurées avec succès');
+console.log('Routes items configurées avec succès');
 
 module.exports = router;

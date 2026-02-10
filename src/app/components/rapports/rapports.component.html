@@ -1,0 +1,268 @@
+<div class="container-fluid bg-white p-4">
+  <!-- En-tête -->
+  <div class="row mb-4 mt-2">
+    <div class="col-md-12 mt-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="h3 mb-1">Rapport</h1>
+          <p class="text-muted mb-0" >Utiliser les filtres</p>
+        </div>
+      </div>
+      <hr>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden"></span>
+    </div>
+    <p class="mt-2">Chargement...</p>
+  </div>
+
+      <div id="page-rapport">
+        <form #rapportForm="ngForm">
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>{{ 'rapport.date-debut' | translate}}</label>
+                <input type="date" class="form-control" 
+                       [(ngModel)]="filtres.dateDebut" 
+                       name="dateDebut">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>{{ 'rapport.date-fin' | translate}}</label>
+                <input type="date" class="form-control" 
+                       [(ngModel)]="filtres.dateFin" 
+                       name="dateFin">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>{{ 'rapport.type-formulaire' | translate}}</label>
+                <mat-form-field class="w-100">
+                  <mat-select
+                    id="formulaireType"
+                    name="formulaireType"
+                    #formulaireType
+                    (valueChange)="implimentationMatFiltre(formulaireType.value,'formulaireType')"
+                    multiple>
+                    <mat-option *ngFor="let type of typesFormulaires" [value]="type">
+                      {{type}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>{{ 'rapport.bibliotheque' | translate}}</label>
+                <mat-form-field class="w-100">
+                  <mat-select
+                    id="bibliotheque"
+                    name="bibliotheque"
+                    #bibliotheque
+                    (valueChange)="implimentationMatFiltre(bibliotheque.value,'bibliotheque')"
+                    multiple>
+                    <mat-option *ngFor="let bib of bibliotheques" [value]="bib">
+                      {{bib}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>{{ 'rapport.statut-bibliotheque' | translate}}</label>
+                <mat-form-field class="w-100">
+                  <mat-select
+                    id="statutBibliotheque"
+                    name="statutBibliotheque"
+                    #statutBibliotheque
+                    (valueChange)="implimentationMatFiltre(statutBibliotheque.value,'statutBibliotheque')"
+                    multiple>
+                    <mat-option *ngFor="let statut of statutsBibliotheque" [value]="statut">
+                      {{statut}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>{{ 'rapport.statut-acq' | translate}}</label>
+                <mat-form-field class="w-100">
+                  <mat-select
+                    id="statutAcq"
+                    name="statutAcq"
+                    #statutAcq
+                    (valueChange)="implimentationMatFiltre(statutAcq.value,'statutAcq')"
+                    multiple>
+                    <mat-option *ngFor="let statut of statutsAcq" [value]="statut">
+                      {{statut}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>{{ 'rapport.priorite' | translate}}</label>
+                <mat-form-field class="w-100">
+                  <mat-select
+                    id="priorite"
+                    name="priorite"
+                    #priorite
+                    (valueChange)="implimentationMatFiltre(priorite.value,'priorite')"
+                    multiple>
+                    <mat-option *ngFor="let p of priorites" [value]="p">
+                      {{p}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>{{ 'rapport.demandeur' | translate}}</label>
+                <input type="text" class="form-control" 
+                       [(ngModel)]="filtres.demandeur" 
+                       name="demandeur"
+                       placeholder="{{ 'rapport.recherche-partielle' | translate}}">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>{{ 'rapport.type-rapport' | translate}}</label>
+                <select class="form-control"
+                        id="typeRapport"
+                        name="typeRapport"
+                        [(ngModel)]="rapportSelectionneId">
+                  <option *ngFor="let rapport of rapportsDisponibles" [value]="rapport.id">
+                    {{rapport.nom}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>{{ 'rapport.resultats-page' | translate}}</label>
+                <select class="form-control"
+                        id="limit"
+                        name="limit"
+                        [(ngModel)]="limit"
+                        (change)="changerLimit(+limit)">
+                  <option [value]="25">25</option>
+                  <option [value]="50">50</option>
+                  <option [value]="100">100</option>
+                  <option [value]="200">200</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Sélection des champs à afficher -->
+        <div class="visible border-top border-bottom mt-2 pt-2 mb-2 pb-2" id="champs-default">
+          <div class="row">
+            <div class="col-md-2" *ngFor="let champ of champsDisponibles">
+              <div class="list-group">
+                <div class="form-check form-check-primary">
+                  <label class="form-check-label">
+                    <input type="checkbox" 
+                           class="form-check-input" 
+                           id="{{ champ }}" 
+                           value="{{ champ }}" 
+                           name="{{ champ }}"
+                           [checked]="colonnesSelectionnees.includes(champ)"
+                           (change)="toggleColonne($event)">
+                    {{ champsTitre[champ] }} 
+                    <i class="input-helper"></i>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-3 offset-md-9">
+            <button type="button" 
+                    class="btn btn-success text-uppercase mt-2" 
+                    (click)="chargerApercu()"
+                    [disabled]="isLoading">
+              <i class="icon-chart icon-layers"></i> {{'rapport.btn-rapport'| translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Tableau contenu rapport -->
+        <div class="row">
+          <div class="col-md-12 mt-3" *ngIf="dataSource">
+            <div class="table-responsive cacherVisible" id="contenuRapport">
+              <div class="d-sm-flex align-items-baseline report-summary-header p-2">
+                <h5 class="font-weight-semibold">
+                  {{'rapport.total-rapport'| translate }} {{totalDonnees}}
+                </h5>
+                <span class="ml-auto"></span>
+              </div>
+              <div class="w-100">
+                <table mat-table
+                       [dataSource]="dataSource"
+                       class="lessons-table mat-elevation-z8 w-100"
+                       matSort>
+
+                  <!-- Création dynamique du tableau -->
+                  <ng-container *ngFor="let col of colonnesSelectionnees" matColumnDef="{{col}}">
+                    <th *matHeaderCellDef mat-sort-header class="font-weight-bold table-cell-header">
+                      {{ champsTitre[col] }}
+                    </th>
+                    <td *matCellDef="let row" class="table-cell-body">
+                      <!-- Badge pour statuts -->
+                      <span *ngIf="isStatusColumn(col)" 
+                            [ngClass]="getBadgeClass(row[col])">
+                        {{row[col]}}
+                      </span>
+                      <!-- Badge pour priorité -->
+                      <span *ngIf="isPriorityColumn(col)" 
+                            [ngClass]="getPriorityBadgeClass(row[col])">
+                        {{row[col]}}
+                      </span>
+                      <!-- Lien pour ID -->
+                      <a *ngIf="col === 'id' || col === 'item_id'" 
+                         title="Consulter la fiche" 
+                         routerLink="/item/{{ row[col] }}">
+                        {{row[col]}}
+                      </a>
+                      <!-- Valeur normale -->
+                      <span *ngIf="!isStatusColumn(col) && !isPriorityColumn(col) && col !== 'id' && col !== 'item_id'">
+                        {{formatCell(col, row[col])}}
+                      </span>
+                    </td>
+                  </ng-container>
+
+                  <mat-header-row *matHeaderRowDef="colonnesSelectionnees"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: colonnesSelectionnees;"></mat-row>
+                </table>
+              </div>
+              <mat-paginator [pageSizeOptions]="[25, 50, 100, 200]"></mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tableau pour export -->
+      <table class="table cacherVisible" id="table-rapport">
+        <tr>
+          <th *ngFor="let col of colonnesSelectionnees">{{champsTitre[col]}}</th>
+        </tr>
+        <tr *ngFor="let item of listeRapport">
+          <td *ngFor="let col of colonnesSelectionnees">{{formatCell(col, item[col])}}</td>
+        </tr>
+      </table>
+</div>
+

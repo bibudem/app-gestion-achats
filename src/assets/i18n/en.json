@@ -108,7 +108,20 @@
   "fiche-periodique": "Periodic folder",
   "historique-statistiques": "Statistics history",
   "list-periodiques": "List of periodicals",
-
+  "labels-rapport": {
+    "item_id": "Item ID",
+    "formulaire_type": "Form Type",
+    "titre_document": "Document Title",
+    "sous_titre": "Subtitle",
+    "isbn_issn": "ISBN / ISSN",
+    "editeur": "Publisher",
+    "categorie_document": "Document Category",
+    "bibliotheque": "Library",
+    "statut_bibliotheque": "Library Status",
+    "localisation_emplacement": "Location / Placement",
+    "demandeur": "Requester",
+    "date_modification": "Modification Date"
+  },
   "message": {
     "confirmer-titre": "Confirm modification",
     "confirmer-text": "Do you want to save the changes?",

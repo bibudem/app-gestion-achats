@@ -6,6 +6,14 @@ import { AppComponent } from "./app.component";
 
 //Import material designer
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
+
 // import pour multiselect
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
@@ -43,6 +51,7 @@ import { ItemsListComponent } from './components/items-list/items-list.component
 import { ItemFormulaireComponent } from './components/item-formulaire/item-formulaire.component';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { DialogService } from './services/dialog.service';
+import { RapportsComponent } from './components/rapports/rapports.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +71,8 @@ import { DialogService } from './services/dialog.service';
     ListFondsComponent,
     ItemsListComponent,
     ItemFormulaireComponent,
-    DialogComponent
+    DialogComponent,
+    RapportsComponent
   ],
     imports: [
         RouterModule,
@@ -83,8 +93,15 @@ import { DialogService } from './services/dialog.service';
         ReactiveFormsModule,
         BrowserAnimationsModule,
         ListBoxModule,
-        DragDropModule
-
+        DragDropModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatSelectModule,
+        MatFormFieldModule,
+        MatCheckboxModule,
+        NoopAnimationsModule,
+        MatInputModule
     ],
   providers: [
     CurrencyPipe, 

@@ -12,7 +12,7 @@ import { Processus } from "../models/Processus";
 })
 export class ProcessusService {
   [x: string]: any;
-  private url = "/api/processus";
+  private url = "/processus";
 
   httpOptions: { headers: HttpHeaders } = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),

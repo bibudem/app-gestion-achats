@@ -1,0 +1,18 @@
+/* Version avec séparation plus marquée */
+.lessons-table th,
+.lessons-table td {
+  border-right: 1px solid #dee2e6;
+  padding: 14px!important;
+  width: 10rem!important;
+  height: 5rem!important;
+}
+
+.lessons-table th {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* Effet hover sur les lignes */
+.lessons-table tr:hover {
+  background-color: #f8f9fa;
+}

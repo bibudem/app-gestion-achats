@@ -4,7 +4,7 @@
   "compilerOptions": {
     "useUnknownInCatchVariables": false,
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": ["node"]  // ← CHANGEZ [] en ["node"]
   },
   "files": [
     "src/main.ts",
