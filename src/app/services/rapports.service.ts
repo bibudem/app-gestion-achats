@@ -96,11 +96,11 @@ export class RapportsService {
             console.log('📊 Pagination:', resp.pagination);
           }
         } else {
-          console.error('❌ Échec de la requête');
+          console.error('Échec de la requête');
         }
       }),
       catchError(err => {
-        console.error('❌ Erreur HTTP:', err);
+        console.error('Erreur HTTP:', err);
         return this.errorHandlerService.handleError<ApiResponse<ItemDetaille[]>>('getRapportDetaille')(err);
       })
     );
@@ -136,11 +136,11 @@ export class RapportsService {
   // ----------- Helpers -----------
 
   private normalizeDetailResponse(raw: any): ApiResponse<ItemDetaille[]> {
-    console.log('🔍 Réponse brute du backend:', raw);
+    console.log('Réponse brute du backend:', raw);
     
     // Cas 1: Backend renvoie { success: true, data: [...], pagination: {...} }
     if (raw?.success && Array.isArray(raw.data)) {
-      console.log('✅ Format avec success et data:', raw.data.length, 'éléments');
+      console.log('Format avec success et data:', raw.data.length, 'éléments');
       return {
         success: true,
         data: raw.data,
@@ -151,7 +151,7 @@ export class RapportsService {
 
     // Cas 2: Backend renvoie directement un tableau
     if (Array.isArray(raw)) {
-      console.log('✅ Format tableau direct:', raw.length, 'éléments');
+      console.log('Format tableau direct:', raw.length, 'éléments');
       return {
         success: true,
         data: raw,
@@ -161,7 +161,7 @@ export class RapportsService {
 
     // Cas 3: Backend renvoie { data: [...], total, limit, offset } (sans success)
     if (raw && Array.isArray(raw.data) && typeof raw.total === 'number') {
-      console.log('✅ Format avec data et total:', raw.data.length, 'éléments');
+      console.log('Format avec data et total:', raw.data.length, 'éléments');
       return {
         success: true,
         data: raw.data,
@@ -176,7 +176,7 @@ export class RapportsService {
     }
 
     // Cas fallback : rien de valide reçu
-    console.warn('⚠️ Réponse API inattendue :', raw);
+    console.warn('Réponse API inattendue :', raw);
     return {
       success: false,
       data: [],

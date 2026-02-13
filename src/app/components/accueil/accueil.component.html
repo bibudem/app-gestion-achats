@@ -54,15 +54,15 @@
     <!-- Total -->
     <div class="stat-card bg-primary text-white">
       <div class="stat-icon">
-        <i class="fas fa-file-alt fa-2x"></i>
+        <i class="bi bi-file-earmark-break icon-lg"></i>
       </div>
       <div class="stat-content">
-        <h3 class="stat-value text-white">
+        <h1 class="stat-value text-white">
           {{ isLoadingDashboard ? '...' : formatNumber(totals.total_items) }}
-        </h3>
+        </h1>
         <p class="stat-label">Total des demandes</p>
         <div class="stat-trend">
-          <i class="fas fa-arrow-up me-1"></i>
+          <i class="bi bi-arrow-up me-1"></i>
           <span *ngIf="!isLoadingDashboard">
             +{{ totals.items_last_7_days }} 7 derniers jours
           </span>
@@ -73,15 +73,15 @@
     <!-- Demandeurs uniques -->
     <div class="stat-card bg-success text-white">
       <div class="stat-icon">
-        <i class="fas fa-users fa-2x"></i>
+        <i class="bi bi-people icon-lg"></i>
       </div>
       <div class="stat-content">
-        <h3 class="stat-value text-white">
+        <h1 class="stat-value text-white ml-1">
           {{ isLoadingDashboard ? '...' : formatNumber(totals.unique_demandeurs) }}
-        </h3>
+        </h1>
         <p class="stat-label">Demandeurs uniques</p>
         <div class="stat-trend">
-          <i class="fas fa-user-plus me-1"></i>
+          <i class="bi bi-person-plus me-1"></i>
           <span>Utilisateurs actifs</span>
         </div>
       </div>
@@ -90,24 +90,24 @@
     <!-- En traitement -->
     <div class="stat-card bg-warning text-dark">
       <div class="stat-icon">
-        <i class="fas fa-cogs fa-2x"></i>
+        <i class="bi bi-gear icon-lg"></i>
       </div>
       <div class="stat-content">
-        <h3 class="stat-value text-white">
+        <h1 class="stat-value text-white ml-1">
           {{ isLoadingDashboard ? '...' : formatNumber(totals.en_traitement) }}
-        </h3>
+        </h1>
         <p class="stat-label">En traitement</p>
         <div class="stat-trend">
-          <i class="fas fa-clock me-1"></i>
+          <i class="bi bi-clock-history me-1"></i>
           <span>En cours de traitement</span>
         </div>
       </div>
     </div>
 
     <!-- Terminés -->
-    <div class="stat-card bg-info text-white">
+    <div class="stat-card bg-info text-white ml-1">
       <div class="stat-icon">
-        <i class="fas fa-check-circle fa-2x"></i>
+        <i class="bi bi-check-circle-fill icon-lg"></i>
       </div>
       <div class="stat-content">
         <h3 class="stat-value text-white">
@@ -115,7 +115,7 @@
         </h3>
         <p class="stat-label">Terminées</p>
         <div class="stat-trend">
-          <i class="fas fa-chart-line me-1"></i>
+          <i class="bi bi-graph-up-arrow me-1"></i>
           <span *ngIf="!isLoadingDashboard">
             {{ calculatePercentage(totals.termines, totals.total_items) }}% Taux de réussite
           </span>
@@ -145,8 +145,8 @@
         <div *ngIf="!isLoadingDashboard" class="type-distribution">
           <div *ngFor="let type of byType" class="type-item">
             <div class="type-header">
-              <span class="type-icon">{{ getTypeIcon(type.formulaire_type) }}</span>
-              <span class="type-name">{{ type.formulaire_type }}</span>
+              <i [ngClass]="getTypeIcon(type.formulaire_type)"></i>
+              <span class="type-name ml-2">{{ type.formulaire_type }}</span>
               <span class="type-count">{{ formatNumber(type.count) }}</span>
             </div>
             <div class="progress" style="height: 8px;">

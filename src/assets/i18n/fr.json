@@ -108,7 +108,6 @@
   "nombrePretSimulAutorises": "Nr. de prêts simultanés autorisés",
   "dateExpiration": "Date d'expiration",
   "dateEpuisement": "Date d'épuisement",
-  "configuration-fonds": "Liste des fonds à configurer",
 
   "message": {
     "confirmer-titre": "Confirmer votre action",
@@ -140,25 +139,37 @@
     "outils": "Configuration",
     "list-fournisseur": "Liste de fournisseurs",
     "list-fonds": "Liste de fonds",
+    "add": "Ajouter",
     "rapports": "Rapports"
   },
   "rapport": {
-    "titre-rapports": "Rapports et statistiques",
-    "date-debut": "Date début",
-    "date-fin": "Date fin",
+    "titre": "Rapports",
+    "description": "Utilisez les filtres pour générer vos rapports personnalisés",
+    "reinitialiser": "Réinitialiser",
+    "exporter": "Exporter Excel",
+    "chargement": "Chargement",
+    "chargement-en-cours": "Chargement des données en cours...",
+    "selection-colonnes": "Sélection des colonnes à afficher",
+    "resultats": "Résultats du rapport",
+    "consulter-fiche": "Consulter la fiche détaillée",
+    "aucune-donnee": "Aucune donnée à afficher",
+    "aucun-resultat": "Aucun résultat trouvé",
+    "aucun-resultat-description": "Essayez de modifier vos filtres pour obtenir des résultats",
+    "total-rapport": "Total",
+    "date-debut": "Date de début",
+    "date-fin": "Date de fin",
     "type-formulaire": "Type de formulaire",
     "bibliotheque": "Bibliothèque",
     "statut-bibliotheque": "Statut bibliothèque",
     "statut-acq": "Statut ACQ",
     "priorite": "Priorité",
     "demandeur": "Demandeur",
+    "recherche-partielle": "Recherche partielle...",
     "type-rapport": "Type de rapport",
-    "resultats-page": "Résultats / page",
-    "recherche-partielle": "Recherche partielle",
-    "btn-rapport": "Générer le rapport",
-    "total-rapport": "Total d'éléments :"
+    "resultats-page": "Résultats par page",
+    "btn-rapport": "Générer le rapport"
   },
- "labels-rapport": {
+  "labels-rapport": {
     "item_id": "ID de l’item",
     "formulaire_type": "Type de formulaire",
     "titre_document": "Titre du document",

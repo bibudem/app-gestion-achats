@@ -181,7 +181,6 @@ select.form-control, .select2-container--default select.select2-selection--singl
 }
 
 .stat-card:hover {
-  transform: translateY(-5px);
   box-shadow: var(--shadow-lg);
 }
 
@@ -226,7 +225,7 @@ select.form-control, .select2-container--default select.select2-selection--singl
 }
 
 .stat-value {
-  font-size: 2.2rem;
+  font-size: 2.25rem!important;
   font-weight: 700;
   margin: 0;
   line-height: 1;
@@ -449,7 +448,6 @@ select.form-control, .select2-container--default select.select2-selection--singl
 }
 
 .priority-card:hover {
-  transform: translateY(-3px);
   box-shadow: var(--shadow-sm);
 }
 
@@ -509,7 +507,6 @@ select.form-control, .select2-container--default select.select2-selection--singl
 }
 
 .action-btn:hover {
-  transform: translateY(-5px);
   box-shadow: var(--shadow-lg);
   color: var(--white);
 }
@@ -616,17 +613,7 @@ select.form-control, .select2-container--default select.select2-selection--singl
   }
 }
 
-.stat-card, .chart-card, .priority-section, .quick-actions {
-  animation: fadeIn 0.5s ease-out forwards;
-}
 
-/* Délais d'animation pour effet cascade */
-.stat-card:nth-child(1) { animation-delay: 0.1s; }
-.stat-card:nth-child(2) { animation-delay: 0.2s; }
-.stat-card:nth-child(3) { animation-delay: 0.3s; }
-.stat-card:nth-child(4) { animation-delay: 0.4s; }
-.chart-card:nth-child(1) { animation-delay: 0.5s; }
-.chart-card:nth-child(2) { animation-delay: 0.6s; }
 
 /* Améliorations de lisibilité */
 * {
@@ -677,4 +664,9 @@ h1, h2, h3, h4, h5, h6 {
 .addVisible {
   display: block!important;
 }
+
+.icon-lg {
+  font-size: 2rem;
+}
+
 

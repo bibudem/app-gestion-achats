@@ -138,19 +138,34 @@ export class AccueilComponent implements OnInit, OnDestroy {
   }
 
   getTypeIcon(type: string): string {
-    if (!type) return '📄';
-    
-    switch(type) {
-      case 'Nouvel achat unique': return '🛒';
-      case 'Nouvel abonnement': return '📰';
-      case 'Modification CCOL': return '✏️';
-      case 'PEB Tipasa numérique': return '🔗';
-      case 'Requête ACQ': return '❓';
-      case 'Springer': return '📚';
-      case 'Suggestion d\'achat': return '💡';
-      default: return '📄';
-    }
+  if (!type) return 'bi bi-file-earmark-text';
+
+  switch (type) {
+    case 'Nouvel achat unique': 
+      return 'bi bi-cart';
+
+    case 'Nouvel abonnement': 
+      return 'bi bi-newspaper';
+
+    case 'Modification CCOL': 
+      return 'bi bi-pencil-square';
+
+    case 'PEB Tipasa numérique': 
+      return 'bi bi-link-45deg';
+
+    case 'Requête ACQ': 
+      return 'bi bi-question-circle';
+
+    case 'Springer': 
+      return 'bi bi-journal-bookmark';
+
+    case 'Suggestion d\'achat': 
+      return 'bi bi-lightbulb';
+
+    default: 
+      return 'bi bi-file-earmark-text';
   }
+}
 
   // Stats par défaut
   private getDefaultStats(): DashboardStats {
