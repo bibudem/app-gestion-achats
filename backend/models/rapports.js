@@ -99,8 +99,8 @@ function buildDateClause(dateDebut, dateFin, params, idxStart = 1) {
  * Empêche l'injection SQL par nom de colonne
  */
 const ALLOWED_FILTERS = {
-  id: COL.id,
-  formulaireType: COL.formulaireType,
+  id: COL.item_id,
+  formulaire_type: COL.formulaire_type,
   priorite: COL.priorite,
   bibliotheque: COL.bibliotheque,
   demandeur: COL.demandeur,

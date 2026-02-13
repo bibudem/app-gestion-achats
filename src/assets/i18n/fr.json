@@ -169,7 +169,6 @@
     "btn-rapport": "Générer le rapport"
   },
   "labels-rapport": {
-    "id": "ID",
     "item_id": "ID de l'item",
     "formulaire_type": "Type de formulaire",
     "titre_document": "Titre",

@@ -80,10 +80,9 @@
               {{ 'rapport.type-formulaire' | translate }}
             </label>
             <select class="form-select form-select-multi"
-                    id="formulaireType"
-                    name="formulaireType"
-                    [(ngModel)]="selectedFormTypes"
-                    (change)="onMultiSelectChange('formulaireType', $event)"
+                    id="formulaire_type"
+                    name="formulaire_type"
+                    (change)="onMultiSelectChange('formulaire_type', $event)"
                     [disabled]="isLoading"
                     multiple
                     size="1">
@@ -91,8 +90,8 @@
                 {{ type }}
               </option>
             </select>
-            <small class="form-text text-muted" *ngIf="selectedFormTypes.length > 0">
-              {{ selectedFormTypes.length }} sélectionné(s)
+            <small class="form-text text-muted" *ngIf="getSelectedCount('formulaire_type') > 0">
+              {{ getSelectedCount('formulaire_type') }} sélectionné(s)
             </small>
           </div>
         </div>
@@ -106,7 +105,6 @@
             <select class="form-select form-select-multi"
                     id="bibliotheque"
                     name="bibliotheque"
-                    [(ngModel)]="selectedBibliotheques"
                     (change)="onMultiSelectChange('bibliotheque', $event)"
                     [disabled]="isLoading"
                     multiple
@@ -115,8 +113,8 @@
                 {{ bib }}
               </option>
             </select>
-            <small class="form-text text-muted" *ngIf="selectedBibliotheques.length > 0">
-              {{ selectedBibliotheques.length }} sélectionné(s)
+            <small class="form-text text-muted" *ngIf="getSelectedCount('bibliotheque') > 0">
+              {{ getSelectedCount('bibliotheque') }} sélectionné(s)
             </small>
           </div>
         </div>
@@ -130,7 +128,6 @@
             <select class="form-select form-select-multi"
                     id="statutBibliotheque"
                     name="statutBibliotheque"
-                    [(ngModel)]="selectedStatutsBib"
                     (change)="onMultiSelectChange('statutBibliotheque', $event)"
                     [disabled]="isLoading"
                     multiple
@@ -139,8 +136,8 @@
                 {{ statut }}
               </option>
             </select>
-            <small class="form-text text-muted" *ngIf="selectedStatutsBib.length > 0">
-              {{ selectedStatutsBib.length }} sélectionné(s)
+            <small class="form-text text-muted" *ngIf="getSelectedCount('statutBibliotheque') > 0">
+              {{ getSelectedCount('statutBibliotheque') }} sélectionné(s)
             </small>
           </div>
         </div>
@@ -154,7 +151,6 @@
             <select class="form-select form-select-multi"
                     id="statutAcq"
                     name="statutAcq"
-                    [(ngModel)]="selectedStatutsAcq"
                     (change)="onMultiSelectChange('statutAcq', $event)"
                     [disabled]="isLoading"
                     multiple
@@ -163,8 +159,8 @@
                 {{ statut }}
               </option>
             </select>
-            <small class="form-text text-muted" *ngIf="selectedStatutsAcq.length > 0">
-              {{ selectedStatutsAcq.length }} sélectionné(s)
+            <small class="form-text text-muted" *ngIf="getSelectedCount('statutAcq') > 0">
+              {{ getSelectedCount('statutAcq') }} sélectionné(s)
             </small>
           </div>
         </div>
@@ -182,7 +178,6 @@
             <select class="form-select form-select-multi"
                     id="priorite"
                     name="priorite"
-                    [(ngModel)]="selectedPriorites"
                     (change)="onMultiSelectChange('priorite', $event)"
                     [disabled]="isLoading"
                     multiple
@@ -191,8 +186,8 @@
                 {{ p }}
               </option>
             </select>
-            <small class="form-text text-muted" *ngIf="selectedPriorites.length > 0">
-              {{ selectedPriorites.length }} sélectionné(s)
+            <small class="form-text text-muted" *ngIf="getSelectedCount('priorite') > 0">
+              {{ getSelectedCount('priorite') }} sélectionné(s)
             </small>
           </div>
         </div>

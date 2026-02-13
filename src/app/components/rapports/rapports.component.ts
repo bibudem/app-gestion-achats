@@ -123,7 +123,7 @@ export class RapportsComponent implements OnInit, AfterViewInit {
 
     // Set default selected columns
     this.colonnesSelectionnees = [
-      'id',
+      'item_id',
       'formulaire_type',
       'demandeur',
       'bibliotheque',
@@ -201,27 +201,53 @@ export class RapportsComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Compter les options sélectionnées dans un select
+   */
+  getSelectedCount(selectId: string): number {
+    const selectElement = document.getElementById(selectId) as HTMLSelectElement;
+    if (!selectElement) return 0;
+    return Array.from(selectElement.selectedOptions).length;
+  }
+
+  /**
    * Handle Bootstrap multi-select changes
    */
   onMultiSelectChange(filterId: string, event: any): void {
     const selectElement = event.target as HTMLSelectElement;
-    const selectedOptions = Array.from(selectElement.selectedOptions).map(opt => opt.value);
+    
+    // Récupérer les valeurs des options sélectionnées directement
+    const selectedValues: string[] = [];
+    console.log('🔍 Récupération des options...');
+    console.log('   Total options:', selectElement.options.length);
+    
+    Array.from(selectElement.options).forEach((option: any, idx: number) => {
+      console.log(`   Option ${idx}: value="${option.value}", text="${option.text}", selected=${option.selected}`);
+      if (option.selected) {
+        // Utiliser le text content pour obtenir la vraie valeur
+        const value = option.text.trim();
+        console.log(`      ✅ Sélectionnée: "${value}"`);
+        selectedValues.push(value);
+      }
+    });
     
     // Normaliser la clé en snake_case pour la cohérence
     const normalizedKey = this.mapKey(filterId);
     
     // DEBUG: Afficher exactement ce qui est sélectionné
     console.log('🔵 Filtre changé:', filterId, '→', normalizedKey);
-    console.log('   Valeurs brutes sélectionnées:', selectedOptions);
-    console.log('   Types des valeurs:', selectedOptions.map(v => typeof v + ': ' + JSON.stringify(v)));
+    console.log('   Valeurs brutes sélectionnées:', selectedValues);
+    console.log('   Types des valeurs:', selectedValues.map(v => typeof v + ': "' + v + '"'));
     
-    if (selectedOptions.length > 0) {
-      this.filtresMatSelect[normalizedKey] = selectedOptions;
+    if (selectedValues.length > 0) {
+      this.filtresMatSelect[normalizedKey] = selectedValues;
     } else {
       delete this.filtresMatSelect[normalizedKey];
     }
     
     console.log('✅ Filtres actifs:', this.filtresMatSelect);
+    
+    // Recharger le rapport avec les nouveaux filtres
+    this.chargerApercu();
   }
 
   /**
@@ -431,16 +457,14 @@ export class RapportsComponent implements OnInit, AfterViewInit {
       if (!values || !values.length) return;
 
       console.log(`🔍 Filtre "${key}":`, values);
-      console.log(`   Types des valeurs:`, values.map((v: any) => typeof v + ': ' + JSON.stringify(v)));
+      console.log(`   Nombre de valeurs:`, values.length);
+      console.log(`   Valeurs à chercher: [${values.map((v: any) => `"${String(v).toLowerCase().trim()}"`).join(', ')}]`);
       
       // Créer un Set de valeurs normalisées (texte)
       const valuesSetText = new Set<string>(values.map((v: any) => {
         const normalized = String(v).toLowerCase().trim();
-        console.log(`   Normalisation: ${JSON.stringify(v)} → "${normalized}"`);
         return normalized;
       }));
-      
-      console.log(`   Set final des valeurs à chercher: [${Array.from(valuesSetText).join(', ')}]`);
       
       result = result.filter((row, rowIndex) => {
         const val = row[key];
@@ -457,15 +481,15 @@ export class RapportsComponent implements OnInit, AfterViewInit {
         const matches = valuesSetText.has(normalizedVal);
         
         if (matches) {
-          console.log(`    ✅ Row ${rowIndex}: "${normalizedVal}" correspond au filtre`);
+          console.log(`    ✅ Row ${rowIndex}: colonne "${key}" = "${normalizedVal}" ✓`);
         } else {
-          console.log(`    ❌ Row ${rowIndex}: "${normalizedVal}" ne correspond pas (cherchait: [${Array.from(valuesSetText).join(', ')}])`);
+          console.log(`    ❌ Row ${rowIndex}: colonne "${key}" = "${normalizedVal}" (attendu: [${Array.from(valuesSetText).join(', ')}])`);
         }
         
         return matches;
       });
       
-      console.log(`   📊 Résultat après filtre "${key}": ${result.length} lignes restantes`);
+      console.log(`   📊 Après filtre "${key}": ${result.length} lignes restantes`);
     });
 
     console.log('✅ FIN FILTRAGE - Lignes:', result.length);
