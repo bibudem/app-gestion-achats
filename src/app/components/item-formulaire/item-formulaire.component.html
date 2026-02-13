@@ -63,7 +63,7 @@
         <div class="row">
           <div class="col-md-4">
             <div class="mb-3">
-              <label class="form-label fw-semibold">
+              <label class="form-label">
                 <span class="text-danger">*</span> Type de formulaire
               </label>
               <select class="form-select form-control" formControlName="formulaire_type"
@@ -81,7 +81,7 @@
           </div>
           <div class="col-md-4">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Titre du document <span class="text-danger">*</span></label>
+              <label class="form-label ">Titre du document <span class="text-danger">*</span></label>
               <input type="text" class="form-control" formControlName="titre_document"
                      [class.is-invalid]="hasError('titre_document', 'required')" 
                      placeholder="Titre complet du document">
@@ -92,7 +92,7 @@
           </div>
           <div class="col-md-4">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Demandeur <span class="text-danger">*</span></label>
+              <label class="form-label ">Demandeur <span class="text-danger">*</span></label>
               <input type="text" class="form-control" formControlName="demandeur"
                      [class.is-invalid]="hasError('demandeur', 'required')"
                      placeholder="Nom du demandeur">
@@ -107,28 +107,28 @@
         <div class="row">
           <div class="col-md-4">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Sous-titre</label>
+              <label class="form-label ">Sous-titre</label>
               <input type="text" class="form-control" formControlName="sous_titre" 
                      placeholder="Sous-titre du document">
             </div>
           </div>
           <div class="col-md-4">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Éditeur</label>
+              <label class="form-label ">Éditeur</label>
               <input type="text" class="form-control" formControlName="editeur" 
                      placeholder="Nom de l'éditeur">
             </div>
           </div>
           <div class="col-md-2">
             <div class="mb-3">
-              <label class="form-label fw-semibold">ISBN/ISSN</label>
+              <label class="form-label ">ISBN/ISSN</label>
               <input type="text" class="form-control" formControlName="isbn_issn" 
                      placeholder="Ex: 978-3-16-148410-0">
             </div>
           </div>
           <div class="col-md-2">
             <div class="mb-3">
-              <label class="form-label fw-semibold">ID de ressource</label>
+              <label class="form-label ">ID de ressource</label>
               <input type="text" class="form-control" formControlName="id_ressource">
             </div>
           </div>
@@ -138,13 +138,13 @@
         <div class="row">     
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Date de publication</label>
+              <label class="form-label ">Date de publication</label>
               <input type="date" class="form-control" formControlName="date_publication">
             </div>
           </div>
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Catégorie de document</label>
+              <label class="form-label ">Catégorie de document</label>
               <select class="form-select form-control" formControlName="categorie_document">
                 <option value="">Sélectionnez</option>
                 <option *ngFor="let cat of options.categorieDocumentOptions" [value]="cat">{{ cat }}</option>
@@ -153,7 +153,7 @@
           </div>
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Format/Support</label>
+              <label class="form-label ">Format/Support</label>
               <select class="form-select form-control" formControlName="format_support">
                 <option value="">Sélectionnez</option>
                 <option value="Imprimé/support physique">Imprimé/support physique</option>
@@ -163,7 +163,7 @@
           </div>
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Priorité</label>
+              <label class="form-label ">Priorité</label>
               <select class="form-select form-control" formControlName="priorite_demande">
                 <option *ngFor="let priorite of options.prioriteOptions" [value]="priorite.value">{{ priorite.label }}</option>
               </select>
@@ -175,7 +175,7 @@
         <div class="row mb-3">
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Bibliothèque</label>
+              <label class="form-label ">Bibliothèque</label>
               <select class="form-select form-control" formControlName="bibliotheque">
                 <option value="">Sélectionnez une bibliothèque</option>
                 <option *ngFor="let bib of options.bibliothequeOptions" [value]="bib">{{ bib }}</option>
@@ -184,13 +184,13 @@
           </div>
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Localisation/Emplacement</label>
+              <label class="form-label ">Localisation/Emplacement</label>
               <input type="text" class="form-control" formControlName="localisation_emplacement">
             </div>
           </div>
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Projets spéciaux</label>
+              <label class="form-label ">Projets spéciaux</label>
               <select class="form-select form-control" formControlName="projet_special">
                 <option value="">Sélectionnez</option>
                 <option *ngFor="let projet of options.projetsSpeciauxOptions" [value]="projet">{{ projet }}</option>
@@ -199,7 +199,7 @@
           </div>
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Création notice DTDM</label>
+              <label class="form-label ">Création notice DTDM</label>
               <select class="form-select form-control" formControlName="creation_notice_dtdm">
                 <option [ngValue]="true">Oui</option>
                 <option [ngValue]="false">Non</option>
@@ -212,7 +212,7 @@
         <div class="row">
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Fonds budgétaire <span class="text-danger">*</span></label>
+              <label class="form-label ">Fonds budgétaire <span class="text-danger">*</span></label>
               <input type="text" class="form-control" formControlName="fonds_budgetaire"
                      [class.is-invalid]="hasError('fonds_budgetaire', 'required')">
               <div class="invalid-feedback" *ngIf="hasError('fonds_budgetaire', 'required')">
@@ -222,13 +222,13 @@
           </div>
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Fonds SN - No de projet</label>
+              <label class="form-label ">Fonds SN - No de projet</label>
               <input type="text" class="form-control" formControlName="fonds_sn_projet">
             </div>
           </div>
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Statut bibliothèque</label>
+              <label class="form-label ">Statut bibliothèque</label>
               <select class="form-select form-control" formControlName="statut_bibliotheque">
                 <option *ngFor="let statut of options.statusOptions" [value]="statut">
                   {{ statut }}
@@ -238,7 +238,7 @@
           </div>
           <div class="col-md-3">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Statut ACQ</label>
+              <label class="form-label ">Statut ACQ</label>
               <select class="form-select form-control" formControlName="statut_acq">
                 <option value="">Sélectionnez</option>
                 <option *ngFor="let statut of options.dircolAcqStatutOptions" [value]="statut">
@@ -253,19 +253,19 @@
         <div class="row mb-3">
           <div class="col-md-4">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Personne à aviser lors de l'activation</label>
+              <label class="form-label ">Personne à aviser lors de l'activation</label>
               <input type="text" class="form-control" formControlName="personne_a_aviser_activation">
             </div>
           </div>
           <div class="col-md-4">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Catalogue</label>
+              <label class="form-label ">Catalogue</label>
               <input type="text" class="form-control" formControlName="catalogue">
             </div>
           </div>
           <div class="col-md-4">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Source d'information</label>
+              <label class="form-label ">Source d'information</label>
               <input type="text" class="form-control" formControlName="source_information">
             </div>
           </div>
@@ -275,13 +275,13 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Note DTDM (Catalogage)</label>
+              <label class="form-label ">Note DTDM (Catalogage)</label>
               <textarea class="form-control" formControlName="note_dtdm" rows="3"></textarea>
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-3">
-              <label class="form-label fw-semibold">Note/Commentaire (Bibliothèque)</label>
+              <label class="form-label ">Note/Commentaire (Bibliothèque)</label>
               <textarea class="form-control" formControlName="note_commentaire" rows="3"></textarea>
             </div>
           </div>
@@ -324,7 +324,7 @@
           <div class="row">
             <div class="col-md-12">
               <div class="mb-3">
-                <label class="form-label fw-semibold">
+                <label class="form-label ">
                   <span class="text-danger">*</span> Précision de la demande
                 </label>
                 <textarea class="form-control" formControlName="precision_demande" rows="4"
@@ -340,20 +340,20 @@
           <div class="row">
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Numéro OCLC</label>
+                <label class="form-label ">Numéro OCLC</label>
                 <input type="text" class="form-control" formControlName="numero_oclc"
                        placeholder="Ex: ocm12345678">
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Collection</label>
+                <label class="form-label ">Collection</label>
                 <input type="text" class="form-control" formControlName="collection" >
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Catalogage</label>
+                <label class="form-label ">Catalogage</label>
                 <input type="text" class="form-control" formControlName="catalogage" >
               </div>
             </div>
@@ -373,7 +373,7 @@
           <div class="row">
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label fw-semibold">
+                <label class="form-label ">
                   <span class="text-danger">*</span> Date de début d'abonnement
                 </label>
                 <input type="date" class="form-control" formControlName="date_debut_abonnement"
@@ -385,7 +385,7 @@
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Type de monographie</label>
+                <label class="form-label ">Type de monographie</label>
                 <select class="form-select form-control" formControlName="type_monographie">
                   <option value="">Sélectionnez</option>
                   <option value="Série">Série</option>
@@ -399,13 +399,13 @@
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Collection</label>
+                <label class="form-label ">Collection</label>
                 <input type="text" class="form-control" formControlName="collection" >
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Catalogage</label>
+                <label class="form-label ">Catalogage</label>
                 <input type="text" class="form-control" formControlName="catalogage">
               </div>
             </div>
@@ -425,13 +425,13 @@
           <div class="row">
             <div class="col-md-3">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Projets spéciaux</label>
+                <label class="form-label ">Projets spéciaux</label>
                 <input type="text" class="form-control" formControlName="projets_speciaux">
               </div>
             </div>
             <div class="col-md-3">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Type de monographie</label>
+                <label class="form-label ">Type de monographie</label>
                 <select class="form-select form-control" formControlName="type_monographie">
                   <option value="">Sélectionnez</option>
                   <option value="Monographie">Monographie</option>
@@ -441,7 +441,7 @@
             </div>
             <div class="col-md-3">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Format électronique</label>
+                <label class="form-label ">Format électronique</label>
                 <select class="form-select form-control" formControlName="format_electronique">
                   <option value="">Sélectionnez</option>
                   <option value="PDF">PDF</option>
@@ -452,7 +452,7 @@
             </div>
             <div class="col-md-3">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Bordereau imprimé</label>
+                <label class="form-label ">Bordereau imprimé</label>
                 <input type="text" class="form-control" formControlName="bordereau_imprime">
               </div>
             </div>
@@ -464,7 +464,7 @@
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" formControlName="reserve_cours" 
                          id="reserveCours">
-                  <label class="form-check-label fw-semibold" for="reserveCours">
+                  <label class="form-check-label " for="reserveCours">
                     Réserve de cours
                   </label>
                 </div>
@@ -475,21 +475,21 @@
           <div class="row" *ngIf="itemForm.get('reserve_cours')?.value">
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Sigle du cours</label>
+                <label class="form-label ">Sigle du cours</label>
                 <input type="text" class="form-control" formControlName="reserve_cours_sigle"
                        placeholder="Ex: INF1234">
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Session</label>
+                <label class="form-label ">Session</label>
                 <input type="text" class="form-control" formControlName="reserve_cours_session"
                        placeholder="Ex: Automne 2024">
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Enseignant</label>
+                <label class="form-label ">Enseignant</label>
                 <textarea class="form-control" formControlName="reserve_cours_enseignant" rows="2"></textarea>
               </div>
             </div>
@@ -498,13 +498,13 @@
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Catégorie de dépense</label>
+                <label class="form-label ">Catégorie de dépense</label>
                 <input type="text" class="form-control" formControlName="categorie_depense">
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Note catalogueur droit</label>
+                <label class="form-label ">Note catalogueur droit</label>
                 <textarea class="form-control" formControlName="note_catalogueur_droit" rows="3"></textarea>
               </div>
             </div>
@@ -524,7 +524,7 @@
           <div class="row">
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Type de demande PEB</label>
+                <label class="form-label ">Type de demande PEB</label>
                 <select class="form-select form-control" formControlName="type_demande_peb">
                   <option value="">Sélectionnez</option>
                   <option value="Prêt">Prêt</option>
@@ -535,14 +535,14 @@
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Référence Tipasa</label>
+                <label class="form-label ">Référence Tipasa</label>
                 <input type="text" class="form-control" formControlName="reference_tipasa"
                        placeholder="Numéro de référence">
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Urgence</label>
+                <label class="form-label ">Urgence</label>
                 <select class="form-select form-control" formControlName="urgence">
                   <option [ngValue]="false">Non</option>
                   <option [ngValue]="true">Oui</option>
@@ -565,7 +565,7 @@
           <div class="row">
             <div class="col-md-12">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Type de requête</label>
+                <label class="form-label ">Type de requête</label>
                 <select class="form-select form-control" formControlName="type_requete">
                   <option value="">Sélectionnez</option>
                   <option value="Information">Information</option>
@@ -580,14 +580,14 @@
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Description de la requête</label>
+                <label class="form-label ">Description de la requête</label>
                 <textarea class="form-control" formControlName="description_requete" rows="2"
                           placeholder="Décrivez votre requête en détail"></textarea>
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Action demandée</label>
+                <label class="form-label ">Action demandée</label>
                 <textarea class="form-control" formControlName="action_demandee" rows="2"
                           placeholder="Quelle action souhaitez-vous?"></textarea>
               </div>
@@ -608,7 +608,7 @@
           <div class="row">
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label fw-semibold">
+                <label class="form-label ">
                   <span class="text-danger">*</span> Quantité
                 </label>
                 <input type="number" class="form-control" formControlName="quantite" min="1"
@@ -638,7 +638,7 @@
           <div class="row">
             <div class="col-md-12">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Justification</label>
+                <label class="form-label ">Justification</label>
                 <textarea class="form-control" formControlName="justification" rows="4"
                           placeholder="Expliquez pourquoi cet achat est pertinent"></textarea>
               </div>
@@ -648,14 +648,14 @@
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Public cible</label>
+                <label class="form-label ">Public cible</label>
                 <input type="text" class="form-control" formControlName="public_cible"
                        placeholder="Ex: Étudiants de 1er cycle">
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label class="form-label fw-semibold">Recommandation</label>
+                <label class="form-label ">Recommandation</label>
                 <select class="form-select form-control" formControlName="recommandation">
                   <option [ngValue]="false">Non</option>
                   <option [ngValue]="true">Oui</option>
