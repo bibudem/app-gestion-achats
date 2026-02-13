@@ -1,99 +1,135 @@
 # Application de Gestion d'Achats
 
-Une application web pour gérer les demandes d'achats et d'abonnements des bibliothèques.
+Application web pour gérer les demandes d'achats et les abonnements des bibliothèques.
 
-##  Fonctionnalités
+## Ce qu'on peut faire
 
-- **Gestion des items** - Ajouter, modifier, consulter et supprimer
-- **Liste complète** - Voir tous les items avec filtres et recherche
-- **Recherche avancée** - Par titre, auteur, ISBN, etc.
-- **Filtres multiples** - Par type, statut, bibliothèque
-- **Gestion des budgets** - Suivi des prix et totaux
-- **Multi-types** - Support pour différents types de formulaires
-
-## Technologies Utilisées
-
-- **Frontend**: Angular, TypeScript, Bootstrap
-- **Backend**: Node.js, Express.js
-- **Base de données**: PostgreSQL avec Supabase
-- **Authentification**: JWT
+- Créer et modifier des demandes d'achat
+- Voir toutes les demandes dans une liste
+- Filtrer par type, statut, date
+- Générer des rapports
+- Gérer les informations de budget
+- Accès sécurisé avec login
 
 ## Installation
 
-### Prérequis
-- Angular (v20 ou plus)
-- Node.js (v18 ou supérieur)
-- npm ou yarn
-- Compte Supabase
+### Avant de commencer
 
-### 1. Cloner le projet
+Vous devez avoir installé sur votre ordinateur :
+- **Node.js** (version 18 ou plus) : https://nodejs.org/
+- **npm** (vient avec Node.js)
+- **PostgreSQL** (version 12 ou plus) : https://www.postgresql.org/
+
+### Étape 1 : Télécharger le projet
+
 ```bash
-git clone [url-du-projet]
+git clone [adresse-du-projet]
 cd app-gestion-achats
 ```
 
-### 2. Installer les dépendances
-```bash
-# Frontend Angular
-npm install
+### Étape 2 : Installer les dépendances
 
-# Backend (dans le dossier backend/)
+Installez les dépendances du frontend (Angular) :
+```bash
+npm install
+```
+
+Installez les dépendances du backend (Express) :
+```bash
 cd backend
 npm install
 cd ..
 ```
 
-### 3. Configuration
+### Étape 3 : Configurer la base de données
+
 Créez un fichier `.env` dans le dossier `backend/` :
+
 ```env
-SUPABASE_URL=votre_url_supabase
-SUPABASE_KEY=votre_cle_supabase
-PORT=9111
-NODE_ENV=development
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=votre_mot_de_passe
+DB_NAME=chaineAchat
 ```
 
-### 4. Démarrer l'application
+Remplacez :
+- `votre_mot_de_passe` par le mot de passe PostgreSQL
+- `DB_HOST` si votre base n'est pas en local
+
+### Étape 4 : Créer la base de données
+
+Ouvrez PostgreSQL et créez une base de données :
+
+```sql
+CREATE DATABASE chaineAchat;
+```
+
+Ensuite, créez les tables en exécutant le fichier SQL fourni dans le projet.
+
+### Étape 5 : Démarrer l'application
+
+Ouvrez deux fenêtres de terminal.
+
+**Terminal 1 - Démarrer le backend (serveur Node.js) :**
 ```bash
-# Terminal 1 - Backend
 cd backend
-npm start
-
-# Terminal 2 - Frontend
-npm start
+node server.js
 ```
 
-L'application sera accessible sur :
-- Frontend: http://localhost:4200
-- Backend: http://localhost:9111
+Le serveur démarre sur : `http://localhost:9111`
 
+**Terminal 2 - Démarrer le frontend (Angular) :**
+```bash
+ng serve
+```
 
+Le frontend démarre sur : `http://localhost:4200`
 
-## 🔧 Développement
+### Étape 6 : Accéder à l'application
 
-### Structure des dossiers
+Ouvrez votre navigateur et allez à :
+```
+http://localhost:4200
+```
+
+Connectez-vous avec vos identifiants.
+
+## Structure du projet
+
 ```
 app-gestion-achats/
-├── src/app/
-│   ├── components/
-│   │   ├── items-list/
-│   │   └── item-formulaire/
-│   └── services/
-     ...
-├── backend/
-│   ├── routes/
-│   ├── controllers/
-│   └── middleware/
-└── README.md
+├── src/                    # Code Angular (frontend)
+│   ├── app/               # Composants et services
+│   ├── assets/            # Images, fichiers de traduction
+│   └── index.html         # Page principale
+├── backend/               # Code Node.js (serveur)
+│   ├── server.js          # Démarrage du serveur
+│   ├── routes/            # Définition des endpoints
+│   ├── controllers/        # Logique des endpoints
+│   ├── models/            # Requêtes à la base de données
+│   └── config/            # Configuration (base de données)
+├── angular.json           # Configuration Angular
+├── package.json           # Dépendances du frontend
+└── README.md              # Ce fichier
 ```
 
-### Commandes utiles
-```bash
-# Développement frontend
-ng serve
+## Aide et dépannage
 
+### Le backend ne démarre pas
+- Vérifiez que PostgreSQL est lancé
+- Vérifiez que le port 9111 n'est pas utilisé
+- Vérifiez les identifiants dans le fichier `.env`
 
-```
+### Le frontend ne démarre pas
+- Vérifiez que Node.js est bien installé : `node --version`
+- Supprimez le dossier `node_modules` et réinstallez : `npm install`
 
+### La base de données ne se connecte pas
+- Lancez PostgreSQL
+- Vérifiez les identifiants dans `.env`
+- Vérifiez que la base `chaineAchat` existe
 
-**Version**: 1.0.0  
-**Dernière mise à jour**: Novembre 2025
+## Support
+
+En cas de problème, vérifiez les logs dans la console où vous avez démarré le serveur.
