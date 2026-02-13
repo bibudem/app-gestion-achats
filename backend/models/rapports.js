@@ -1,38 +1,52 @@
-// models/rapports.js
+// models/rapports.js - VERSION FLEXIBLE
 const pool = require('../config/postgres.config');
 
 /**
- * ⚙️ À ADAPTER (IMPORTANT)
- * Remplace les valeurs par les VRAIS noms de colonnes de ta table.
- * Ton CSV montre 28 champs sans en-tête, donc je ne peux pas garantir les noms exacts. [1](https://udemontreal-my.sharepoint.com/personal/natalia_jabinschi_umontreal_ca/_layouts/15/Doc.aspx?sourcedoc=%7BA03DA1EA-F6A4-47B8-93D9-086C71F03D48%7D&file=sql-table.csv&action=default&mobileredirect=true)
+ * Configuration des colonnes de la base de données
+ * 
+ * ⚠️ IMPORTANT: Basé sur votre CSV, la clé primaire semble être "item_id", pas "id"
+ * Si vous avez une erreur "colonne id n'existe pas", c'est normal.
+ * 
+ * Adaptez ces noms aux VRAIES colonnes de votre table.
+ * Pour les découvrir, exécutez le script SQL fourni: decouvrir_colonnes.sql
  */
 const COL = {
   table: 'tbl_items',
 
-  id: 'id',
+  // ⚠️ MODIFIER ICI: Utilisez le vrai nom de votre clé primaire
+  // Option 1: Si c'est "item_id"
+  id: 'item_id',
+  // Option 2: Si c'est "id"  
+  // id: 'id',
+  
+  // Colonnes principales
   formulaireType: 'formulaire_type',
   dateCreation: 'date_creation',
-  priorite: 'priorite',
-  titre: 'titre',
+  dateModification: 'date_modification',
+  priorite: 'priorite_demande',
+  
+  // Informations document
+  titre: 'titre_document',
   sousTitre: 'sous_titre',
-  identifiant: 'identifiant', // ex: isbn_issn / numero / etc.
+  identifiant: 'isbn_issn',
   editeur: 'editeur',
-  annee: 'annee_publication',
-
-  typeDocument: 'type_document',
-  support: 'support',
+  annee: 'date_publication',
+  
+  // Classification
+  typeDocument: 'categorie_document',
+  support: 'format_support',
   fonds: 'fonds_budgetaire',
+  
+  // Acteurs
   bibliotheque: 'bibliotheque',
   demandeur: 'demandeur',
-
-  // Tes données montrent des statuts "En attente en bibliothèque" et "Soumis aux ACQ" + "Demande annulée". [1](https://udemontreal-my.sharepoint.com/personal/natalia_jabinschi_umontreal_ca/_layouts/15/Doc.aspx?sourcedoc=%7BA03DA1EA-F6A4-47B8-93D9-086C71F03D48%7D&file=sql-table.csv&action=default&mobileredirect=true)
-  statutBibliotheque: 'statut_bibliotheque', // à confirmer
-  statutAcq: 'statut_acq', // à confirmer
-
-  updatedAt: 'date_modification' // ou updated_at
+  
+  // Statuts
+  statutBibliotheque: 'statut_bibliotheque',
+  statutAcq: 'statut_acq'
 };
 
-// Libellés de statuts (à ajuster selon tes valeurs réelles)
+// Libellés de statuts standards
 const STATUTS = {
   BIB_EN_ATTENTE: ['En attente en bibliothèque', 'En attente'],
   BIB_EN_TRAITEMENT: ['En traitement', 'En traitement en bibliothèque'],
@@ -41,10 +55,16 @@ const STATUTS = {
   ACQ_ANNULEE: ['Demande annulée']
 };
 
+/**
+ * Valide une chaîne de date
+ */
 function isValidDateString(s) {
   return typeof s === 'string' && !Number.isNaN(Date.parse(s));
 }
 
+/**
+ * Normalise et valide la pagination
+ */
 function normalizePagination(limit, offset) {
   const l = Math.min(Math.max(parseInt(limit ?? 100, 10) || 100, 1), 500);
   const o = Math.max(parseInt(offset ?? 0, 10) || 0, 0);
@@ -52,26 +72,31 @@ function normalizePagination(limit, offset) {
 }
 
 /**
- * Clause de date inclusive (inclut la journée complète de dateFin)
+ * Construit une clause WHERE pour les dates (inclut la journée complète)
  */
 function buildDateClause(dateDebut, dateFin, params, idxStart = 1) {
   let idx = idxStart;
+  
   if (dateDebut && dateFin) {
     if (!isValidDateString(dateDebut) || !isValidDateString(dateFin)) {
       throw new Error('Paramètres de date invalides (dateDebut/dateFin).');
     }
+    
+    // Clause qui inclut toute la journée de fin
     const clause =
       `${COL.dateCreation} >= $${idx}::timestamptz ` +
       `AND ${COL.dateCreation} < ($${idx + 1}::timestamptz + interval '1 day')`;
+    
     params.push(dateDebut, dateFin);
     return { clause, idx: idx + 2 };
   }
+  
   return { clause: '', idx };
 }
 
 /**
- * ✅ Whitelist des filtres autorisés (API -> colonne DB)
- * Empêche l'injection SQL par nom de colonne.
+ * Whitelist des filtres autorisés
+ * Empêche l'injection SQL par nom de colonne
  */
 const ALLOWED_FILTERS = {
   id: COL.id,
@@ -90,6 +115,8 @@ const ALLOWED_FILTERS = {
 
 // ==================== STATISTIQUES GÉNÉRALES ====================
 async function statistiquesGenerales({ dateDebut, dateFin }) {
+  console.log('📊 Model: statistiquesGenerales', { dateDebut, dateFin });
+  
   const params = [];
   let idx = 1;
   const whereParts = [];
@@ -99,14 +126,6 @@ async function statistiquesGenerales({ dateDebut, dateFin }) {
   if (clause) whereParts.push(clause);
 
   const where = whereParts.length ? `WHERE ${whereParts.join(' AND ')}` : '';
-
-  // NB : Si ta table n'a pas "montant", retire ces lignes (ou adapte COL.montant)
-  const hasMontant = true; // mets false si tu n'as pas de colonne "montant"
-  const montantSelect = hasMontant
-    ? `,
-      COALESCE(SUM(COALESCE(montant, 0)), 0)::numeric AS montant_total,
-      AVG(montant)::numeric AS montant_moyen`
-    : `, 0::numeric AS montant_total, NULL::numeric AS montant_moyen`;
 
   const query = `
     SELECT
@@ -119,7 +138,6 @@ async function statistiquesGenerales({ dateDebut, dateFin }) {
 
       COUNT(*) FILTER (WHERE ${COL.statutAcq} = ANY($${idx + 3}))::int AS acq_soumis,
       COUNT(*) FILTER (WHERE ${COL.statutAcq} = ANY($${idx + 4}))::int AS acq_annulees
-      ${montantSelect}
     FROM ${COL.table}
     ${where}
   `;
@@ -132,12 +150,17 @@ async function statistiquesGenerales({ dateDebut, dateFin }) {
     STATUTS.ACQ_ANNULEE
   );
 
+  console.log('🔍 Query:', query.substring(0, 200) + '...');
+  console.log('📋 Params:', params);
+
   const { rows } = await pool.query(query, params);
   return rows[0];
 }
 
 // ==================== RAPPORT PAR TYPE ====================
 async function rapportParType({ dateDebut, dateFin, formulaireType }) {
+  console.log('📊 Model: rapportParType', { dateDebut, dateFin, formulaireType });
+  
   const params = [];
   let idx = 1;
   const whereParts = ['1=1'];
@@ -180,17 +203,23 @@ async function rapportParType({ dateDebut, dateFin, formulaireType }) {
     STATUTS.ACQ_ANNULEE
   );
 
+  console.log('🔍 Query:', query.substring(0, 200) + '...');
+
   const { rows } = await pool.query(query, params);
   return rows;
 }
 
 // ==================== RAPPORT DÉTAILLÉ ====================
 async function rapportDetaille(filters = {}, limit = 100, offset = 0) {
+  console.log('📊 Model: rapportDetaille');
+  console.log('🔍 Filtres reçus:', filters);
+  console.log('📄 Pagination:', { limit, offset });
+  
   const params = [];
   let idx = 1;
   const conditions = [];
 
-  // Date
+  // 1. Filtre de dates
   if (filters.dateDebut && filters.dateFin) {
     const { clause, idx: idxAfterDate } = buildDateClause(
       filters.dateDebut,
@@ -198,31 +227,40 @@ async function rapportDetaille(filters = {}, limit = 100, offset = 0) {
       params,
       idx
     );
-    if (clause) conditions.push(clause);
+    if (clause) {
+      conditions.push(clause);
+      console.log('✅ Filtre date ajouté');
+    }
     idx = idxAfterDate;
   }
 
-  // Autres filtres (whitelist)
+  // 2. Autres filtres (whitelist)
   for (const [apiKey, dbCol] of Object.entries(ALLOWED_FILTERS)) {
     const value = filters[apiKey];
+    
+    // Ignorer les valeurs vides
     if (value === undefined || value === null || value === '') continue;
 
-    // Recherche partielle utile (demandeur, titre)
+    // Recherche partielle pour le demandeur (ILIKE)
     if (apiKey === 'demandeur' && typeof value === 'string') {
       conditions.push(`${dbCol} ILIKE $${idx}`);
       params.push(`%${value}%`);
+      console.log(`✅ Filtre ${apiKey} (ILIKE) ajouté`);
       idx += 1;
       continue;
     }
 
+    // Recherche exacte pour les autres champs
     conditions.push(`${dbCol} = $${idx}`);
     params.push(value);
+    console.log(`✅ Filtre ${apiKey} (=) ajouté:`, value);
     idx += 1;
   }
 
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   const { limit: l, offset: o } = normalizePagination(limit, offset);
 
+  // ✅ Query optimisée - retourne TOUTES les colonnes
   const query = `
     SELECT *
     FROM ${COL.table}
@@ -231,23 +269,55 @@ async function rapportDetaille(filters = {}, limit = 100, offset = 0) {
     LIMIT $${idx} OFFSET $${idx + 1}
   `;
 
+  // Query de comptage
   const countQuery = `
     SELECT COUNT(*)::int AS total
     FROM ${COL.table}
     ${where}
   `;
 
-  const [data, count] = await Promise.all([
-    pool.query(query, [...params, l, o]),
-    pool.query(countQuery, params)
-  ]);
+  console.log('🔍 Query données:', query);
+  console.log('🔍 Query count:', countQuery);
+  console.log('📋 Params:', params);
 
-  return {
-    data: data.rows,
-    total: count.rows[0]?.total ?? 0,
-    limit: l,
-    offset: o
-  };
+  try {
+    // Exécuter les deux requêtes en parallèle
+    const [data, count] = await Promise.all([
+      pool.query(query, [...params, l, o]),
+      pool.query(countQuery, params)
+    ]);
+
+    const result = {
+      data: data.rows,
+      total: count.rows[0]?.total ?? 0,
+      limit: l,
+      offset: o
+    };
+
+    console.log('✅ Résultat:', {
+      lignes: result.data.length,
+      total: result.total,
+      limit: result.limit,
+      offset: result.offset
+    });
+    
+    // Log de diagnostic: affiche la structure de la première ligne
+    if (result.data.length > 0) {
+      console.log('📊 Structure première ligne:', Object.keys(result.data[0]).sort());
+      console.log('📊 Premier élément (partiel):', {
+        id: result.data[0][COL.id],
+        titre: result.data[0]['titre_document'] || result.data[0][COL.titre],
+        formulaire_type: result.data[0][COL.formulaireType]
+      });
+    }
+
+    return result;
+    
+  } catch (error) {
+    console.error('❌ Erreur SQL:', error.message);
+    console.error('📋 Params utilisés:', params);
+    throw error;
+  }
 }
 
 module.exports = {

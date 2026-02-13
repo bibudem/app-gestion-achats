@@ -61,6 +61,7 @@ export class RapportsComponent implements OnInit, AfterViewInit {
   selectedPriorites: string[] = [];
 
   // Filter options - STATIC DATA (ne pas écraser avec les données du serveur)
+  // Ces listes sont utilisées en cache pour les sélecteurs multi-select
   typesFormulaires: string[] = [
     'Modification CCOL',
     'Nouvel abonnement',
@@ -97,6 +98,10 @@ export class RapportsComponent implements OnInit, AfterViewInit {
     'Bibliothèque de médecine vétérinaire',
     'Bibliothèque de santé'
   ];
+
+  // Cache pour les valeurs uniques des filtres extraites des données
+  private filterValuesCache: Map<string, Set<string>> = new Map();
+  private lastFilterCacheUpdate: Map<string, number> = new Map();
 
   constructor(
     private rapportsService: RapportsService,
@@ -202,16 +207,122 @@ export class RapportsComponent implements OnInit, AfterViewInit {
     const selectElement = event.target as HTMLSelectElement;
     const selectedOptions = Array.from(selectElement.selectedOptions).map(opt => opt.value);
     
-    // DEBUG: Décommentez pour diagnostiquer les problèmes de filtres
-    console.log('🔵 Filtre changé:', filterId, '→', selectedOptions);
+    // Normaliser la clé en snake_case pour la cohérence
+    const normalizedKey = this.mapKey(filterId);
+    
+    // DEBUG: Afficher exactement ce qui est sélectionné
+    console.log('🔵 Filtre changé:', filterId, '→', normalizedKey);
+    console.log('   Valeurs brutes sélectionnées:', selectedOptions);
+    console.log('   Types des valeurs:', selectedOptions.map(v => typeof v + ': ' + JSON.stringify(v)));
     
     if (selectedOptions.length > 0) {
-      this.filtresMatSelect[filterId] = selectedOptions;
+      this.filtresMatSelect[normalizedKey] = selectedOptions;
     } else {
-      delete this.filtresMatSelect[filterId];
+      delete this.filtresMatSelect[normalizedKey];
     }
     
     console.log('✅ Filtres actifs:', this.filtresMatSelect);
+  }
+
+  /**
+   * Extraire et cacher les valeurs uniques pour un champ donné
+   * Utile pour dynamiquement construire les options de filtres
+   */
+  private extractAndCacheFilterValues(rows: any[], fieldName: string): string[] {
+    if (!rows || rows.length === 0) {
+      return [];
+    }
+
+    const cacheKey = `cache_${fieldName}`;
+    const now = Date.now();
+    const cacheAge = now - (this.lastFilterCacheUpdate.get(cacheKey) || 0);
+
+    // Invalider le cache après 5 minutes
+    if (cacheAge > 5 * 60 * 1000) {
+      this.filterValuesCache.delete(cacheKey);
+      this.lastFilterCacheUpdate.delete(cacheKey);
+    }
+
+    // Retourner depuis le cache si disponible
+    if (this.filterValuesCache.has(cacheKey)) {
+      const cachedValues = this.filterValuesCache.get(cacheKey);
+      return cachedValues ? Array.from(cachedValues).sort() : [];
+    }
+
+    // Extraire et mettre en cache les valeurs uniques
+    const uniqueValues = new Set<string>();
+    rows.forEach(row => {
+      const value = row[fieldName];
+      if (value && value !== '') {
+        uniqueValues.add(String(value).trim());
+      }
+    });
+
+    // Sauvegarder en cache
+    this.filterValuesCache.set(cacheKey, uniqueValues);
+    this.lastFilterCacheUpdate.set(cacheKey, now);
+
+    return Array.from(uniqueValues).sort();
+  }
+
+  /**
+   * Obtenir les valeurs mises en cache pour un champ donné
+   */
+  getCachedFilterValues(fieldName: string): string[] {
+    const cacheKey = `cache_${fieldName}`;
+    const cachedValues = this.filterValuesCache.get(cacheKey);
+    return cachedValues ? Array.from(cachedValues).sort() : [];
+  }
+
+  /**
+   * Mettre à jour les options de filtres multi-select basées sur les données actuelles
+   */
+  private updateFilterOptions(rows: any[]): void {
+    if (!rows || rows.length === 0) return;
+
+    // Extraire les valeurs uniques et les mettre en cache
+    const typesFormulaireExtraits = this.extractAndCacheFilterValues(rows, 'formulaire_type');
+    const bibliothequesExtraites = this.extractAndCacheFilterValues(rows, 'bibliotheque');
+    const statutsBibExtraits = this.extractAndCacheFilterValues(rows, 'statut_bibliotheque');
+    const statutsAcqExtraits = this.extractAndCacheFilterValues(rows, 'statut_acq');
+    const prioritesExtraites = this.extractAndCacheFilterValues(rows, 'priorite');
+
+    // Fusionner avec les listes statiques si besoin (garde les valeurs statiques + dynamiques)
+    if (typesFormulaireExtraits.length > 0) {
+      this.typesFormulaires = Array.from(new Set([...this.typesFormulaires, ...typesFormulaireExtraits])).sort();
+    }
+
+    if (bibliothequesExtraites.length > 0) {
+      this.bibliotheques = Array.from(new Set([...this.bibliotheques, ...bibliothequesExtraites])).sort();
+    }
+
+    if (statutsBibExtraits.length > 0) {
+      this.statutsBibliotheque = Array.from(new Set([...this.statutsBibliotheque, ...statutsBibExtraits])).sort();
+    }
+
+    if (statutsAcqExtraits.length > 0) {
+      this.statutsAcq = Array.from(new Set([...this.statutsAcq, ...statutsAcqExtraits])).sort();
+    }
+
+    if (prioritesExtraites.length > 0) {
+      this.priorites = Array.from(new Set([...this.priorites, ...prioritesExtraites])).sort();
+    }
+
+    console.log('🔄 Options de filtres mises à jour');
+    console.log('  Types formulaire:', this.typesFormulaires.length);
+    console.log('  Bibliothèques:', this.bibliotheques.length);
+    console.log('  Statuts bibliothèque:', this.statutsBibliotheque.length);
+    console.log('  Statuts ACQ:', this.statutsAcq.length);
+    console.log('  Priorités:', this.priorites.length);
+  }
+
+  /**
+   * Obtenir le nombre total de valeurs mises en cache pour un filtre
+   */
+  getFilterValueCount(fieldName: string): number {
+    const cacheKey = `cache_${fieldName}`;
+    const cachedValues = this.filterValuesCache.get(cacheKey);
+    return cachedValues ? cachedValues.size : 0;
   }
 
   /**
@@ -239,6 +350,8 @@ export class RapportsComponent implements OnInit, AfterViewInit {
       // Build filters object
       const filtres = this.construireFiltres();
       
+      console.log('📍 Début chargerApercu() avec filtres:', filtres);
+      
       // Fetch report data
       const response = await this.fetchRapportResponse(this.rapportSelectionneId, filtres);
 
@@ -252,6 +365,15 @@ export class RapportsComponent implements OnInit, AfterViewInit {
         ? response.data
         : response.data ? [response.data] : [];
 
+      console.log('📦 Données brutes reçues:', rows.length, 'lignes');
+      if (rows.length > 0) {
+        console.log('   Clés disponibles dans première ligne:', Object.keys(rows[0]));
+        console.log('   Premier élément:', rows[0]);
+      }
+
+      // Mettre à jour les options de filtres basées sur les données
+      this.updateFilterOptions(rows);
+
       // Apply filters
       const rowsFiltres = this.appliquerFiltresMatSelect(rows);
 
@@ -264,6 +386,7 @@ export class RapportsComponent implements OnInit, AfterViewInit {
 
       // Update table data source
       this.dataSource.data = rowsFiltres;
+      console.log('📊 Données du tableau (final):', this.dataSource.data.length, 'lignes');
 
     } catch (err) {
       console.error("Erreur lors du chargement du rapport:", err);
@@ -289,28 +412,60 @@ export class RapportsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Apply Material Select filters to rows
+   * Apply Material Select filters to rows - OPTIMIZED
+   * Gère à la fois les textes et les numéros
    */
   private appliquerFiltresMatSelect(rows: any[]): any[] {
-    // DEBUG: Décommentez pour diagnostiquer les problèmes de filtres
     console.log('🟢 DÉBUT FILTRAGE - Lignes:', rows.length, 'Filtres:', this.filtresMatSelect);
     
     let result = [...rows];
 
+    // Si aucun filtre, retourner directement
+    if (Object.keys(this.filtresMatSelect).length === 0) {
+      console.log('✅ FIN FILTRAGE (pas de filtres) - Lignes:', result.length);
+      return result;
+    }
+
+    // Appliquer chaque filtre de manière optimisée
     Object.entries(this.filtresMatSelect).forEach(([key, values]: [string, any]) => {
       if (!values || !values.length) return;
 
-      const mappedKey = this.mapKey(key);
-      console.log(`🔍 Filtre "${key}" → "${mappedKey}":`, values);
+      console.log(`🔍 Filtre "${key}":`, values);
+      console.log(`   Types des valeurs:`, values.map((v: any) => typeof v + ': ' + JSON.stringify(v)));
       
-      result = result.filter(row => {
-        // Chercher d'abord avec la clé mappée (snake_case), puis la clé originale
-        const val = row[mappedKey] || row[key];
-        const matches = values.includes(val);
+      // Créer un Set de valeurs normalisées (texte)
+      const valuesSetText = new Set<string>(values.map((v: any) => {
+        const normalized = String(v).toLowerCase().trim();
+        console.log(`   Normalisation: ${JSON.stringify(v)} → "${normalized}"`);
+        return normalized;
+      }));
+      
+      console.log(`   Set final des valeurs à chercher: [${Array.from(valuesSetText).join(', ')}]`);
+      
+      result = result.filter((row, rowIndex) => {
+        const val = row[key];
+        
+        if (val === null || val === undefined || val === '') {
+          console.log(`    ⚠️  Row ${rowIndex}: Valeur manquante pour clé "${key}"`);
+          return false;
+        }
+        
+        // Normaliser la valeur des données (texte)
+        const normalizedVal = String(val).toLowerCase().trim();
+        
+        // Comparer directement
+        const matches = valuesSetText.has(normalizedVal);
+        
+        if (matches) {
+          console.log(`    ✅ Row ${rowIndex}: "${normalizedVal}" correspond au filtre`);
+        } else {
+          console.log(`    ❌ Row ${rowIndex}: "${normalizedVal}" ne correspond pas (cherchait: [${Array.from(valuesSetText).join(', ')}])`);
+        }
+        
         return matches;
       });
       
-      console.log(`   📊 Résultat: ${result.length} lignes restantes`);
+      console.log(`   📊 Résultat après filtre "${key}": ${result.length} lignes restantes`);
     });
 
     console.log('✅ FIN FILTRAGE - Lignes:', result.length);
@@ -323,12 +478,18 @@ export class RapportsComponent implements OnInit, AfterViewInit {
   private mapKey(key: string): string {
     const map: Record<string, string> = {
       formulaireType: 'formulaire_type',
+      formulaire_type: 'formulaire_type',
       statutBibliotheque: 'statut_bibliotheque',
+      statut_bibliotheque: 'statut_bibliotheque',
       statutAcq: 'statut_acq',
+      statut_acq: 'statut_acq',
       dateCreation: 'date_creation',
+      date_creation: 'date_creation',
       dateFin: 'date_fin',
+      date_fin: 'date_fin',
       bibliotheque: 'bibliotheque',
-      priorite: 'priorite'
+      priorite: 'priorite',
+      demandeur: 'demandeur'
     };
     return map[key] || key;
   }
@@ -342,8 +503,51 @@ export class RapportsComponent implements OnInit, AfterViewInit {
     // Only auto-adapt if no columns are currently selected
     // This prevents overwriting user's column selection
     if (this.colonnesSelectionnees.length === 0) {
-      this.colonnesSelectionnees = Object.keys(rows[0]);
+      this.colonnesSelectionnees = this.getAvailableColumns(rows);
     }
+  }
+
+  /**
+   * Get all available columns from data
+   */
+  private getAvailableColumns(rows: any[]): string[] {
+    if (!rows || rows.length === 0) return [];
+
+    const allColumns = new Set<string>();
+    
+    // Parcourir toutes les lignes pour récupérer toutes les clés
+    rows.forEach(row => {
+      if (row && typeof row === 'object') {
+        Object.keys(row).forEach(key => allColumns.add(key));
+      }
+    });
+
+    // Trier les colonnes avec les colonnes importantes en premier
+    const priorityColumns = [
+      'id',
+      'item_id',
+      'formulaire_type',
+      'titre_document',
+      'demandeur',
+      'bibliotheque',
+      'statut_bibliotheque',
+      'statut_acq',
+      'priorite',
+      'date_creation',
+      'date_modification'
+    ];
+
+    const sorted = Array.from(allColumns).sort((a, b) => {
+      const aIndex = priorityColumns.indexOf(a);
+      const bIndex = priorityColumns.indexOf(b);
+      
+      if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+      if (aIndex !== -1) return -1;
+      if (bIndex !== -1) return 1;
+      return a.localeCompare(b);
+    });
+
+    return sorted;
   }
 
   /**
@@ -657,6 +861,10 @@ export class RapportsComponent implements OnInit, AfterViewInit {
     this.selectedStatutsBib = [];
     this.selectedStatutsAcq = [];
     this.selectedPriorites = [];
+    
+    // Vider le cache des filtres
+    this.filterValuesCache.clear();
+    this.lastFilterCacheUpdate.clear();
     
     // Reset table data
     this.listeRapport = [];

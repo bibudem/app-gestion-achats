@@ -139,7 +139,6 @@
     "outils": "Configuration",
     "list-fournisseur": "Liste de fournisseurs",
     "list-fonds": "Liste de fonds",
-    "add": "Ajouter",
     "rapports": "Rapports"
   },
   "rapport": {
@@ -170,18 +169,28 @@
     "btn-rapport": "Générer le rapport"
   },
   "labels-rapport": {
-    "item_id": "ID de l’item",
+    "id": "ID",
+    "item_id": "ID de l'item",
     "formulaire_type": "Type de formulaire",
-    "titre_document": "Titre du document",
+    "titre_document": "Titre",
     "sous_titre": "Sous-titre",
     "isbn_issn": "ISBN / ISSN",
+    "identifiant": "Identifiant",
     "editeur": "Éditeur",
+    "auteur": "Auteur",
     "categorie_document": "Catégorie du document",
     "bibliotheque": "Bibliothèque",
     "statut_bibliotheque": "Statut de la bibliothèque",
+    "statut_acq": "Statut ACQ",
+    "priorite": "Priorité",
     "localisation_emplacement": "Localisation / Emplacement",
     "demandeur": "Demandeur",
-    "date_modification": "Date de modification"
+    "date_creation": "Date de création",
+    "date_modification": "Date de modification",
+    "notes": "Notes",
+    "montant": "Montant",
+    "montant_cad": "Montant (CAD)",
+    "montant_usd": "Montant (USD)"
  },
   "home": {
     "cards-list": "Éditeurs ou fournisseurs",
