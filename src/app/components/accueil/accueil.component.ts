@@ -28,14 +28,14 @@ export class AccueilComponent implements OnInit, OnDestroy {
   
   // Tableau de couleurs
   chartColors = {
-    primary: '#4361ee',
-    secondary: '#3a0ca3',
-    success: '#4cc9f0',
-    warning: '#f72585',
-    info: '#7209b7',
-    light: '#4895ef',
-    dark: '#3f37c9',
-    gray: '#adb5bd'
+    primary: '#00407F',
+    secondary: '#0057AC',
+    success: '#52B782',
+    warning: '#B72600',
+    info: '#0057AC',
+    light: '#CCE2F3',
+    dark: '#0B113A',
+    gray: '#607386'
   };
 
   constructor(
@@ -130,10 +130,10 @@ export class AccueilComponent implements OnInit, OnDestroy {
     if (!priority) return '#6b7280';
     
     switch(priority.toLowerCase()) {
-      case 'haute': return '#ef4444';
-      case 'moyenne': return '#f59e0b';
-      case 'basse': return '#10b981';
-      default: return '#6b7280';
+      case 'haute': return '#B72600';
+      case 'moyenne': return '#FFCA40';
+      case 'basse': return '#246405';
+      default: return '#37424D';
     }
   }
 

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Item, ItemFormulaireService, ApiResponse } from '../../services/items-formulaire.service';
 import { ListeChoixOptions } from '../../lib/ListeChoixOptions';
 import { DialogService } from '../../services/dialog.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-item-formulaire',
@@ -26,7 +27,8 @@ export class ItemFormulaireComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private itemService: ItemFormulaireService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private location: Location
   ) {
     this.itemForm = this.createForm();
   }
@@ -430,6 +432,10 @@ export class ItemFormulaireComponent implements OnInit {
       this.router.navigate(['/items']);
     }
   }
+
+  onReturn(): void {
+    this.location.back();
+ }
 
   private markFormGroupTouched(): void {
     Object.keys(this.itemForm.controls).forEach(key => {

@@ -10,120 +10,204 @@
   /* Verts */
   --primary-green: #024244;
   --secondary-green: #246405;
-  --light-green: #4aa28b;
+  --light-green: #52B782;
   --extra-light-green: #e5fdf0;
   --success-green: #52B782;
   
   /* Autres */
-  --warning-orange: #f04e24;
+  --warning-orange: #F04E24;
   --warning-light: #fee1de;
   --accent-yellow: #FFCA40;
-  --danger-red: #c52f08;
+  --danger-red: #B72600;
   
   /* Gris */
   --dark-gray: #343a40;
   --medium-gray: #37424D;
   --light-gray: #E7EBEE;
   --text-gray: #607386;
+  --border-gray: #9DABB9;
   --white: #ffffff;
   
   /* Ombres */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 8px 15px rgba(0, 0, 0, 0.15);
-  
 }
-/* css pour header */
-.navbar .navbar-brand-wrapper{
-  background: #e9eaec;
+
+/* =============================================
+   STYLES DE BASE
+   ============================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--medium-gray);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Lora', Georgia, 'Times New Roman', Times, serif;
+  color: var(--primary-blue);
+}
+
+/* =============================================
+   NAVIGATION ET HEADER
+   ============================================= */
+
+.navbar .navbar-brand-wrapper {
+  background: var(--light-gray);
 }
 
 .navbar {
-  border-bottom: 4px solid #0057ac;
+  border-bottom: 4px solid var(--secondary-blue);
 }
+
 .navbar .navbar-brand-wrapper .navbar-brand-inner-wrapper .navbar-brand img {
   max-width: 100%;
   height: auto;
 }
+
 .navbar .navbar-brand-wrapper .navbar-brand-inner-wrapper .navbar-toggler {
-  color: #0057ac;
+  color: var(--secondary-blue);
 }
+
 .navbar .navbar-menu-wrapper .navbar-nav .nav-item.nav-profile img {
   width: 100%;
 }
-select.form-control, .select2-container--default select.select2-selection--single, .select2-container--default .select2-selection--single select.select2-search__field, select.typeahead, select.tt-query, select.tt-hint
- {
-    outline: 1px solid #9DABB9;
-    color: #37424D;
-}
 
-.form-control{
-  outline: 1px solid #9DABB9;
-  color: #37424D;
-}
-
-.btn {
-   border-radius: 8px;
-}
-
-.btn-pri.btn-primary.disabled, .btn-primary:disabled
- {
-    color: #fff;
-    background-color: #00407F;
-    border-color: #00407F;
-}
+/* =============================================
+   SIDEBAR
+   ============================================= */
 
 .sidebar {
-    height: 100%;
-  }
+  height: 100%;
+}
 
-.form-check-input{
+/* =============================================
+   FORMULAIRES
+   ============================================= */
+
+select.form-control, 
+.select2-container--default select.select2-selection--single, 
+.select2-container--default .select2-selection--single select.select2-search__field, 
+select.typeahead, 
+select.tt-query, 
+select.tt-hint {
+  outline: 1px solid var(--border-gray);
+  color: var(--medium-gray);
+}
+
+.form-control {
+  outline: 1px solid var(--border-gray);
+  color: var(--medium-gray);
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  border: 1px solid var(--light-gray);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+.form-control:focus, 
+.form-select:focus {
+  border-color: var(--light-blue);
+  box-shadow: 0 0 0 0.25rem rgba(35, 128, 209, 0.25);
+}
+
+.form-select {
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  border: 1px solid var(--light-gray);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+.form-check-input {
   padding: 0.75rem!important;
 }
 
-.form-check-label{
+.form-check-label {
   margin-left: 2.75rem!important;
   padding-top: 0.5rem!important;
 }
 
-.nav-link{
-  color: #00407F!important;
+/* =============================================
+   BOUTONS
+   ============================================= */
+
+.btn {
+  border-radius: 8px;
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 600;
 }
 
-.nav-tabs{
-  background: #E7EBEE;
-}
-.btn-primary, .bg-primary{
-    background-color: #00407F!important;
-    border-color: #00407F!important;
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
-.btn-success{
-    background-color: #246405;
-    border-color: #246405;
+.btn-primary, 
+.bg-primary {
+  background-color: var(--secondary-blue)!important;
+  border-color: var(--secondary-blue)!important;
 }
 
-.content-wrapper
- {
-    padding: 0 1rem 1rem!important;
+.btn-primary.disabled, 
+.btn-primary:disabled {
+  color: var(--white);
+  background-color: var(--secondary-blue);
+  border-color: var(--secondary-blue);
 }
 
-.nav-tabs .nav-link.active {
-    color: #00407F!important;
-    border-bottom-color: #00407F!important;
-    background-color: #f8f9fa!important;
+.btn-outline-primary {
+  color: var(--secondary-blue)!important;
+  border-color: var(--secondary-blue)!important;
+}
+
+.btn-outline-primary:hover {
+  border-color: var(--secondary-blue)!important;
+  color: var(--white)!important;
+  background-color: var(--secondary-blue)!important;
+}
+
+.btn-success {
+  background-color: var(--secondary-green)!important;
+  border-color: var(--secondary-green)!important;
 }
 
 /* =============================================
-   STYLES POUR LE DASHBOARD (COMPOSANT ACCUEIL)
+   NAVIGATION PAR ONGLETS
    ============================================= */
 
+.nav-link {
+  color: var(--secondary-blue)!important;
+}
 
+.nav-tabs {
+  background: var(--light-gray);
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--secondary-blue)!important;
+  border-bottom-color: var(--secondary-blue)!important;
+  background-color: #f8f9fa!important;
+}
+
+/* =============================================
+   CONTENT WRAPPER
+   ============================================= */
+
+.content-wrapper {
+  padding: 0 1rem 1rem!important;
+}
+
+/* =============================================
+   DASHBOARD PRINCIPAL
+   ============================================= */
 
 /* Conteneur principal du dashboard */
 .dashboard-container {
   padding: 20px;
-  background-color: #f8f9fa;
   min-height: calc(100vh - 80px);
 }
 
@@ -162,6 +246,10 @@ select.form-control, .select2-container--default select.select2-selection--singl
   align-items: center;
 }
 
+/* =============================================
+   CARTES DE STATISTIQUES
+   ============================================= */
+
 /* Grille de statistiques */
 .stats-grid {
   display: grid;
@@ -198,13 +286,13 @@ select.form-control, .select2-container--default select.select2-selection--singl
 
 /* Carte warning (orange) */
 .stat-card.bg-warning {
-  background: linear-gradient(135deg, var(--warning-orange), #ff7b54) !important;
+  background: linear-gradient(135deg, var(--warning-orange), var(--warning-orange)) !important;
   color: var(--white) !important;
 }
 
 /* Carte info (bleu clair) */
 .stat-card.bg-info {
-  background: linear-gradient(135deg, var(--light-blue), #4aa2e3) !important;
+  background: linear-gradient(135deg, var(--light-blue), var(--secondary-blue)) !important;
   color: var(--white) !important;
 }
 
@@ -246,6 +334,10 @@ select.form-control, .select2-container--default select.select2-selection--singl
   opacity: 0.95;
 }
 
+/* =============================================
+   GRAPHIQUES ET CHARTS
+   ============================================= */
+
 /* Grille de graphiques */
 .charts-grid {
   display: grid;
@@ -277,7 +369,10 @@ select.form-control, .select2-container--default select.select2-selection--singl
   font-family: 'Lora', Georgia, 'Times New Roman', Times, serif;
 }
 
-/* Distribution par type */
+/* =============================================
+   DISTRIBUTION PAR TYPE
+   ============================================= */
+
 .type-distribution {
   display: flex;
   flex-direction: column;
@@ -333,7 +428,10 @@ select.form-control, .select2-container--default select.select2-selection--singl
   font-family: 'Figtree', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Top demandeurs */
+/* =============================================
+   TOP DEMANDEURS
+   ============================================= */
+
 .top-demanders {
   display: flex;
   flex-direction: column;
@@ -350,7 +448,6 @@ select.form-control, .select2-container--default select.select2-selection--singl
 
 .demander-item:hover {
   background: var(--light-gray);
-  transform: translateX(5px);
 }
 
 .demander-rank {
@@ -372,8 +469,8 @@ select.form-control, .select2-container--default select.select2-selection--singl
 }
 
 .rank-badge.top-3 {
-  background: linear-gradient(135deg, var(--accent-yellow), #ffd700);
-  color: var(--primary-blue);
+  background: linear-gradient(135deg, var(--hover-dark-blue), var(--secondary-blue));
+  color: var(--white);
 }
 
 .demander-info {
@@ -410,7 +507,10 @@ select.form-control, .select2-container--default select.select2-selection--singl
   border-radius: 3px;
 }
 
-/* Section priorité */
+/* =============================================
+   SECTION PRIORITÉ
+   ============================================= */
+
 .priority-section {
   background: var(--white);
   border-radius: 12px;
@@ -476,7 +576,10 @@ select.form-control, .select2-container--default select.select2-selection--singl
   font-family: 'Figtree', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Actions rapides */
+/* =============================================
+   ACTIONS RAPIDES
+   ============================================= */
+
 .quick-actions {
   background: var(--white);
   border-radius: 12px;
@@ -533,7 +636,11 @@ select.form-control, .select2-container--default select.select2-selection--singl
   margin-top: 8px;
 }
 
-/* États de chargement et messages */
+/* =============================================
+   ÉTATS ET MESSAGES
+   ============================================= */
+
+/* États de chargement */
 .loading-spinner {
   border: 3px solid rgba(0, 0, 0, 0.1);
   border-radius: 50%;
@@ -542,11 +649,6 @@ select.form-control, .select2-container--default select.select2-selection--singl
   height: 30px;
   animation: spin 1s linear infinite;
   margin: 20px auto;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 
 /* Messages d'état */
@@ -568,7 +670,50 @@ select.form-control, .select2-container--default select.select2-selection--singl
   border-left: 4px solid var(--danger-red);
 }
 
-/* Responsive */
+/* =============================================
+   CLASSES UTILITAIRES
+   ============================================= */
+
+.noVisible {
+  display: none!important;
+}
+
+.cacherVisible {
+  display: none;
+}
+
+.addVisible {
+  display: block!important;
+}
+
+.icon-lg {
+  font-size: 2rem;
+}
+
+/* =============================================
+   ANIMATIONS
+   ============================================= */
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+
 @media (max-width: 768px) {
   .dashboard-container {
     padding: 10px;
@@ -600,73 +745,3 @@ select.form-control, .select2-container--default select.select2-selection--singl
     font-size: 1.8rem;
   }
 }
-
-/* Animations */
-@keyframes fadeIn {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
-}
-
-
-
-/* Améliorations de lisibilité */
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: var(--medium-gray);
-  line-height: 1.6;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Lora', Georgia, 'Times New Roman', Times, serif;
-  color: var(--primary-blue);
-}
-
-/* Boutons améliorés */
-.btn {
-  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-weight: 600;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
-}
-
-/* Formulaires */
-.form-control, .form-select {
-  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  border: 1px solid var(--light-gray);
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-}
-
-.form-control:focus, .form-select:focus {
-  border-color: var(--light-blue);
-  box-shadow: 0 0 0 0.25rem rgba(35, 128, 209, 0.25);
-}
-
-.noVisible {
-  display: none!important;
-}
-.cacherVisible {
-  display: none;
-}
-.addVisible {
-  display: block!important;
-}
-
-.icon-lg {
-  font-size: 2rem;
-}
-
-

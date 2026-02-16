@@ -348,7 +348,7 @@
 
                     <!-- ID Link -->
                     <a *ngIf="col === 'id' || col === 'item_id'" 
-                       [routerLink]="['/item', row[col]]"
+                       [routerLink]="['/items', row[col]]"
                        class="text-primary text-decoration-none"
                        [title]="'rapport.consulter-fiche' | translate">
                       <i class="bi bi-link-45deg"></i> {{ row[col] }}
