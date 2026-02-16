@@ -135,6 +135,9 @@ app-gestion-achats/
 En cas de problème, vérifiez les logs dans la console où vous avez démarré le serveur.
 
 
-© 2026 Bibudem – Tous droits réservés.
-Application de Gestion d’Achats – Version 1.0
-Auteur : Natalia Jabinschi
+## À propos
+
+**Application de Gestion d'Achats** – Version 1.0  
+Développée par Natalia Jabinschi  
+
+© 2026 Bibudem – Tous droits réservés
