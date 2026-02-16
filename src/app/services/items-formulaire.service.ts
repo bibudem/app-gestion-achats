@@ -123,7 +123,7 @@ export interface ApiResponse<T> {
   providedIn: "root",
 })
 export class ItemFormulaireService {
-  private url = "http://localhost:9111/items";
+  private url = "http://localhost:3000/items";
 
   httpOptions: { headers: HttpHeaders } = {
     headers: new HttpHeaders({ 

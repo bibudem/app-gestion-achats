@@ -63,7 +63,7 @@ export class AccueilComponent implements OnInit, OnDestroy {
         if (data.dashboard?.success && data.graph?.success) {
           this.dashboardStats = data.dashboard.data || this.getDefaultStats();
           this.graphData = data.graph.data;
-          console.log('✅ Toutes les données chargées');
+          console.log('Toutes les données chargées');
         } else {
           this.handleError('Erreur dans la réponse du serveur');
         }

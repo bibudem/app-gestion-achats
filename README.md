@@ -23,7 +23,7 @@ Vous devez avoir installé sur votre ordinateur :
 ### Étape 1 : Télécharger le projet
 
 ```bash
-git clone [adresse-du-projet]
+git clone https://github.com/bibudem/app-gestion-achats.git
 cd app-gestion-achats
 ```
 
@@ -77,7 +77,7 @@ cd backend
 node server.js
 ```
 
-Le serveur démarre sur : `http://localhost:9111`
+Le serveur démarre sur : `http://localhost:3000`
 
 **Terminal 2 - Démarrer le frontend (Angular) :**
 ```bash
@@ -118,7 +118,7 @@ app-gestion-achats/
 
 ### Le backend ne démarre pas
 - Vérifiez que PostgreSQL est lancé
-- Vérifiez que le port 9111 n'est pas utilisé
+- Vérifiez que le port n'est pas utilisé
 - Vérifiez les identifiants dans le fichier `.env`
 
 ### Le frontend ne démarre pas

@@ -24,9 +24,9 @@ pool.on('error', (err) => {
 // Test de connexion au démarrage
 pool.query('SELECT NOW()', (err, res) => {
   if (err) {
-    console.error('❌ Échec de connexion à PostgreSQL:', err.message);
+    console.error('Échec de connexion à PostgreSQL:', err.message);
   } else {
-    console.log('✅ PostgreSQL connecté avec succès à', res.rows[0].now);
+    console.log('PostgreSQL connecté avec succès à', res.rows[0].now);
   }
 });
 

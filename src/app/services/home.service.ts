@@ -66,7 +66,7 @@ export interface ApiResponse<T> {
   providedIn: "root",
 })
 export class HomeService {
-  private url = "http://localhost:9111/home";
+  private url = "http://localhost:3000/home";
 
   httpOptions: { headers: HttpHeaders } = {
     headers: new HttpHeaders({ 

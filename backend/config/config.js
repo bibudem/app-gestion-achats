@@ -12,8 +12,8 @@ module.exports = {
 
   //ports
   clientPort: 4200,
-  serverPort: 9111,
-  fusionAuthPort: 9111,
+  serverPort: 3000,
+  fusionAuthPort: 3000,
 
   //autre config
   // common tenant URL
